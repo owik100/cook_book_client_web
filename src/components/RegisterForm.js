@@ -25,15 +25,14 @@ class RegisterForm extends Component {
         this.setState({
             [name]: value
         })
-        this.CanRegister();
     }
 
     handleSubmit(event) {
-
-
-        this.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword)
-        //let info = APIHelper.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword);
-
+        if(this.CanRegister())
+        {
+            this.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword)
+            //let info = APIHelper.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword);
+        }
         event.preventDefault();
     }
 
@@ -53,7 +52,7 @@ class RegisterForm extends Component {
                 if (!response.ok) {
                     return Promise.reject(response)
                 }
-                return response.text() // or return response.text()
+                return response.text() 
             })
             // catch error response and extract the error message
             .catch(async response => {
@@ -65,6 +64,7 @@ class RegisterForm extends Component {
                 this.setState({ InfoMessage: "Rejestracja pomyślna! Możesz teraz się zalogować." })
                 this.setState({ InfoMessageIsError: false })
                 this.setState({ DuringOperation: false })
+                this.ClearForm();
             })
             .catch(error => {
                 //Connection problem
@@ -90,10 +90,25 @@ class RegisterForm extends Component {
         if (this.state.Email && this.state.Login && this.state.Password && this.state.ConfirmPassword) {
             if (this.state.Password === this.state.ConfirmPassword) {
                 output = true;
+                this.setState({ InfoMessageIsError: false })
+                this.setState({ InfoMessage: "" })
+            }
+            else{
+                this.setState({ InfoMessageIsError: true })
+                this.setState({ InfoMessage: "Hasła nie są takie same" })
             }
         }
-        //alert(output);
         return output;
+    }
+
+    ClearForm()
+    {
+        document.getElementById("registerForm").reset();
+
+        this.setState({ Email: "" })
+        this.setState({ Login: "" })
+        this.setState({ Password: "" })
+        this.setState({ ConfirmPassword: "" })
     }
 
     RegisterMessage() {
@@ -130,29 +145,29 @@ class RegisterForm extends Component {
                 <div class="row">
                     <div class="col">
 
-                        <Form onSubmit={this.handleSubmit}>
+                        <Form id="registerForm" onSubmit={this.handleSubmit}>
                             <h1 className="display-3 text-center mt-5">Rejestracja</h1>
 
                             {this.RegisterMessage()}
 
                             <Form.Group controlId="formEmail">
                                 <Form.Label>Email</Form.Label>
-                                <Form.Control type="email" placeholder="Email" name="Email" onChange={this.handleChange} value={this.state.Email} />
+                                <Form.Control type="email" placeholder="Email" name="Email" required onChange={this.handleChange} value={this.state.Email} />
                             </Form.Group>
 
                             <Form.Group controlId="formLogin">
                                 <Form.Label>Login</Form.Label>
-                                <Form.Control type="text" placeholder="Enter login" name="Login" onChange={this.handleChange} value={this.state.Login} />
+                                <Form.Control type="text" placeholder="Enter login" name="Login" required onChange={this.handleChange} value={this.state.Login} />
                             </Form.Group>
 
                             <Form.Group controlId="formPassword">
                                 <Form.Label>Hasło</Form.Label>
-                                <Form.Control type="password" placeholder="Password" name="Password" onChange={this.handleChange} value={this.state.Password} />
+                                <Form.Control type="password" placeholder="Password" name="Password" required onChange={this.handleChange} value={this.state.Password} />
                             </Form.Group>
 
                             <Form.Group controlId="formPasswordRepeat">
                                 <Form.Label>Powtórz hasło</Form.Label>
-                                <Form.Control type="password" placeholder="Password" name="ConfirmPassword" onChange={this.handleChange} value={this.state.ConfirmPassword} />
+                                <Form.Control type="password" placeholder="Password" name="ConfirmPassword" required onChange={this.handleChange} value={this.state.ConfirmPassword} />
                             </Form.Group>
                             <div class="d-flex justify-content-center">
                             <Button variant="primary" type="submit">
@@ -160,8 +175,6 @@ class RegisterForm extends Component {
                          </Button>
                          </div>
                         </Form>
-
-
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
