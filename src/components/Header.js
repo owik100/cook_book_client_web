@@ -9,21 +9,39 @@ function AuthButton() {
     let history = useHistory();
   
     return Authentication.isAuthenticated() ? (
-
+      
         <Nav.Link 
           onClick={() => {
-            Authentication.DeleteToken(() => history.push("/"));
+            Authentication.LogOut(() => history.push("/"));
              
           }}
           as={Link} to="/LoginForm">
           Wyloguj
           </Nav.Link>
+  
 
     ) : (
      <Nav.Link  as={Link} to="/LoginForm">
          Zaloguj się
      </Nav.Link>
     );
+  }
+
+  function GetName()
+  {
+if(Authentication.LoadUserName() !=null)
+{
+    return(
+        <Navbar.Text>
+        Witaj {Authentication.LoadUserName()}
+        </Navbar.Text>
+     )
+}
+else{
+    return null;
+}
+
+    
   }
 
 function Header() {
@@ -36,8 +54,12 @@ function Header() {
                     <Nav className="mr-auto">
                         <Nav.Link as={Link} to="/" >Home</Nav.Link>
                         <Nav.Link as={Link} to="/Recipes" >Przepisy</Nav.Link>
-                         {AuthButton()}
+                        
                     </Nav>
+                    <Nav className="justify-content-end">
+                        {GetName()}
+                    {AuthButton()}
+                        </Nav>
                 </Navbar.Collapse>
             </Navbar>
         </header>

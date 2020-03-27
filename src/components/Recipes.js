@@ -1,12 +1,27 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { Authentication } from "../helpers/Authentication"
 
-function Recipes()
-{
-    return(
-        <div>
-            <h1>Jestes zalogowany!</h1>
-        </div>
-    )
+class Recipes extends Component {
+
+    constructor() {
+        super()
+        //this.handleChange = this.handleChange.bind(this);
+    }
+
+    componentDidMount()
+    {
+       
+    }
+
+    render() {
+        return (
+            <div>
+                <h1>Jestes zalogowany!</h1>
+            </div>
+        )
+    }
+
+
 }
 
 export default Recipes

@@ -72,8 +72,8 @@ class LoginForm extends Component {
                 this.setState({ DuringOperation: false })
                 
                 Authentication.SaveToken(data.access_Token, this.state.RememberMe )
-
-                this.setState({isLogged: true})
+                this.GetUserData();
+               
 
             })
             .catch(error => {
@@ -99,6 +99,60 @@ class LoginForm extends Component {
             })
 
     };
+
+    GetUserData()
+    {
+        let bearer = 'bearer ' + Authentication.LoadToken()
+        console.log(bearer)
+
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json',
+            'Authorization' : bearer },
+        };
+
+        fetch('https://localhost:44342/api/User', requestOptions)
+            .then(response => {
+                // reject not ok response
+                if (!response.ok) {
+                    return Promise.reject(response)
+                }
+                return response.json() 
+            })
+            // catch error response and extract the error message
+            .catch(async response => {
+                const error = await response.text().then(text => text)
+                return Promise.reject(error)
+            })
+            .then(data => {
+                console.log("Pobrano dane użytkownika")
+                console.log(data)
+                Authentication.SaveUserData(data);
+                this.setState({isLogged: true})
+
+            })
+            .catch(error => {
+                //Connection problem
+                if (error == "TypeError: response.text is not a function") {
+                    console.log('Problem z połączeniem')
+                    this.setState({ InfoMessage: 'Problem z połączeniem' })
+                    this.setState({ DuringOperation: false })
+                }
+                else {
+                    try{
+                        var obj = JSON.parse(error)
+                        console.log(obj.message)
+                        this.setState({ InfoMessage: obj.message })
+                        this.setState({ DuringOperation: false })
+                    }
+                    //Another problem...
+                    catch(error){
+                        console.log(error);
+                    }
+                   
+                }
+            })
+    }
 
 
     LoginMessage() {
