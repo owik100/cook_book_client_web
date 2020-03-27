@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Button, Spinner } from 'react-bootstrap';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Authentication } from "../helpers/Authentication"
 
 class LoginForm extends Component {
@@ -13,15 +13,18 @@ class LoginForm extends Component {
             Password: "",
             RememberMe: false,
             InfoMessage: "",
-            DuringOperation: false
+            DuringOperation: false,
+            isLogged: false,
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
-        const token = Authentication.LoadToken();
-        console.log(token)
+        if(Authentication.isAuthenticated())
+        {
+            this.setState({isLogged: true})
+        }
      }
 
     handleChange(event) {
@@ -69,8 +72,9 @@ class LoginForm extends Component {
                 this.setState({ DuringOperation: false })
                 
                 Authentication.SaveToken(data.access_Token, this.state.RememberMe )
-              
-                //Load home page...
+
+                this.setState({isLogged: true})
+
             })
             .catch(error => {
                 //Connection problem
@@ -123,6 +127,10 @@ class LoginForm extends Component {
 
 render()
 {
+    if (this.state.isLogged === true) {
+        return <Redirect to='/Recipes' />
+    }
+
     return (
         <div class="container">
             <div class="row">

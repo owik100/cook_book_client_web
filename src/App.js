@@ -29,7 +29,7 @@ function App() {
       <Router>
             <Header />
         <Switch>
-          <Route path="/LoginForm">
+        <Route path="/LoginForm">
             <LoginForm />
           </Route>
           <Route path="/RegisterForm">
@@ -52,7 +52,7 @@ function PrivateRoute({ children, ...rest }) {
     <Route
       {...rest}
       render={({ location }) =>
-      Authentication.isAuthenticated ? (
+      Authentication.isAuthenticated() ? (
           children
         ) : (
           <Redirect
