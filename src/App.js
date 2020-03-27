@@ -29,10 +29,10 @@ function App() {
       <Router>
             <Header />
         <Switch>
-        <Route path="/LoginForm">
+        <Route path="/Login">
             <LoginForm />
           </Route>
-          <Route path="/RegisterForm">
+          <Route path="/Register">
             <RegisterForm />
           </Route>
           <PrivateRoute path="/Recipes">
@@ -57,7 +57,7 @@ function PrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: "/LoginForm",
+              pathname: "/Login",
               state: { from: location }
             }}
           />
@@ -69,4 +69,3 @@ function PrivateRoute({ children, ...rest }) {
 
 
 export default App;
-{/* <Link to="/">Home</Link> */ }

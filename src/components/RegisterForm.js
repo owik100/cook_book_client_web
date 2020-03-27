@@ -28,8 +28,7 @@ class RegisterForm extends Component {
     }
 
     handleSubmit(event) {
-        if(this.CanRegister())
-        {
+        if (this.CanRegister()) {
             this.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword)
             //let info = APIHelper.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword);
         }
@@ -52,7 +51,7 @@ class RegisterForm extends Component {
                 if (!response.ok) {
                     return Promise.reject(response)
                 }
-                return response.text() 
+                return response.text()
             })
             // catch error response and extract the error message
             .catch(async response => {
@@ -75,14 +74,19 @@ class RegisterForm extends Component {
                     this.setState({ DuringOperation: false })
                 }
                 else {
-                    var obj = JSON.parse(error)
-                    console.log(obj.message)
-                    this.setState({ InfoMessageIsError: true })
-                    this.setState({ InfoMessage: obj.message })
-                    this.setState({ DuringOperation: false })
+                    try {
+                        var obj = JSON.parse(error)
+                        console.log(obj.message)
+                        this.setState({ InfoMessageIsError: true })
+                        this.setState({ InfoMessage: obj.message })
+                        this.setState({ DuringOperation: false })
+                    }
+                    //Another problem...
+                    catch (error) {
+                        console.log(error);
+                    }
                 }
             })
-
     };
 
     CanRegister() {
@@ -93,7 +97,7 @@ class RegisterForm extends Component {
                 this.setState({ InfoMessageIsError: false })
                 this.setState({ InfoMessage: "" })
             }
-            else{
+            else {
                 this.setState({ InfoMessageIsError: true })
                 this.setState({ InfoMessage: "Hasła nie są takie same" })
             }
@@ -101,8 +105,7 @@ class RegisterForm extends Component {
         return output;
     }
 
-    ClearForm()
-    {
+    ClearForm() {
         document.getElementById("registerForm").reset();
 
         this.setState({ Email: "" })
@@ -115,7 +118,7 @@ class RegisterForm extends Component {
         if (this.state.DuringOperation) {
             return (
                 <div class="d-flex justify-content-center">
-                    <Spinner animation="grow" variant="primary"  role="status">
+                    <Spinner animation="grow" variant="primary" role="status">
                         <span className="sr-only my-auto mx-auto">Loading...</span>
                     </Spinner>
                 </div>
@@ -139,7 +142,6 @@ class RegisterForm extends Component {
     }
 
     render() {
-        const isDuringOperation = this.state.DuringOperation;
         return (
             <div class="container">
                 <div class="row">
@@ -170,18 +172,18 @@ class RegisterForm extends Component {
                                 <Form.Control type="password" placeholder="Password" name="ConfirmPassword" required onChange={this.handleChange} value={this.state.ConfirmPassword} />
                             </Form.Group>
                             <div class="d-flex justify-content-center">
-                            <Button variant="primary" type="submit">
-                                Zarejestruj
+                                <Button variant="primary" type="submit">
+                                    Zarejestruj
                          </Button>
-                         </div>
+                            </div>
                         </Form>
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
-                <Button variant="outline-primary" as={Link} to="/LoginForm" className="mt-3"  >
-                    Wróć
+                    <Button variant="outline-primary" as={Link} to="/Login" className="mt-3"  >
+                        Wróć
             </Button>
-            </div>
+                </div>
             </div>
         )
     }

@@ -1,48 +1,41 @@
 import React from 'react'
 import { Navbar, Nav } from 'react-bootstrap';
-import {Link, useHistory,} from "react-router-dom";
-import {Authentication} from '../helpers/Authentication'
+import { Link, useHistory, } from "react-router-dom";
+import { Authentication } from '../helpers/Authentication'
 
 
 
 function AuthButton() {
     let history = useHistory();
-  
     return Authentication.isAuthenticated() ? (
-      
-        <Nav.Link 
-          onClick={() => {
-            Authentication.LogOut(() => history.push("/"));
-             
-          }}
-          as={Link} to="/LoginForm">
-          Wyloguj
+
+        <Nav.Link
+            onClick={() => {
+                Authentication.LogOut(() => history.push("/"));
+
+            }}
+            as={Link} to="/Login">
+            Wyloguj
           </Nav.Link>
-  
-
     ) : (
-     <Nav.Link  as={Link} to="/LoginForm">
-         Zaloguj się
+            <Nav.Link as={Link} to="/Login">
+                Zaloguj się
      </Nav.Link>
-    );
-  }
-
-  function GetName()
-  {
-if(Authentication.LoadUserName() !=null)
-{
-    return(
-        <Navbar.Text>
-        Witaj {Authentication.LoadUserName()}
-        </Navbar.Text>
-     )
-}
-else{
-    return null;
+        );
 }
 
-    
-  }
+function GetName() {
+    if (Authentication.LoadUserName() != null && Authentication.isAuthenticated()) {
+        return (
+            <Navbar.Text>
+                Witaj {Authentication.LoadUserName()}
+            </Navbar.Text>
+        )
+    }
+    else {
+        return null;
+    }
+}
 
 function Header() {
     return (
@@ -54,12 +47,12 @@ function Header() {
                     <Nav className="mr-auto">
                         <Nav.Link as={Link} to="/" >Home</Nav.Link>
                         <Nav.Link as={Link} to="/Recipes" >Przepisy</Nav.Link>
-                        
+
                     </Nav>
                     <Nav className="justify-content-end">
                         {GetName()}
-                    {AuthButton()}
-                        </Nav>
+                        {AuthButton()}
+                    </Nav>
                 </Navbar.Collapse>
             </Navbar>
         </header>
