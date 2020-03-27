@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { Link } from "react-router-dom";
-
-import Cookie from "js-cookie"
+import { Authentication } from "../helpers/Authentication"
 
 class LoginForm extends Component {
 
@@ -21,10 +20,9 @@ class LoginForm extends Component {
     }
 
     componentDidMount() {
-        const token = Cookie.get("mojToken") ? Cookie.get("mojToken") : null;
+        const token = Authentication.LoadToken();
         console.log(token)
      }
-
 
     handleChange(event) {
         const { name, value } = event.target
@@ -33,13 +31,10 @@ class LoginForm extends Component {
         })
     }
 
-    handleSubmit(event) {
-      
-            this.LogIn(this.state.Login, this.state.Password)
-        
+    handleSubmit(event) {      
+        this.LogIn(this.state.Login, this.state.Password)       
         event.preventDefault();
     }
-
 
     LogIn(username, password) {
         this.setState({ DuringOperation: true })
@@ -72,9 +67,9 @@ class LoginForm extends Component {
                 console.log("Zalogowano")
                 this.setState({ InfoMessage: ""})
                 this.setState({ DuringOperation: false })
-
-                console.log(data);
-                Cookie.set("mojToken", data.access_Token);
+                
+                Authentication.SaveToken(data.access_Token, this.state.RememberMe )
+              
                 //Load home page...
             })
             .catch(error => {
@@ -91,6 +86,7 @@ class LoginForm extends Component {
                         this.setState({ InfoMessage: obj.message })
                         this.setState({ DuringOperation: false })
                     }
+                    //Another problem...
                     catch(error){
                         console.log(error);
                     }
@@ -99,8 +95,6 @@ class LoginForm extends Component {
             })
 
     };
-
-
 
 
     LoginMessage() {

@@ -3,6 +3,8 @@ import React from 'react'
 import logo from './logo.svg';
 import './App.css';
 
+import {Authentication} from '../src/helpers/Authentication'
+
 function Main()
 {
     return(
@@ -21,6 +23,13 @@ function Main()
             Learn React
           </a>
         </header>
+        <button
+        onClick={() => {
+          Authentication.DeleteToken();
+        }}
+      >
+        Sign out
+      </button>
       </div>
     ) 
 }
