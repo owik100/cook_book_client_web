@@ -1,6 +1,5 @@
 import React from 'react';
-import { ResponsiveEmbed } from 'react-bootstrap';
-import { Authentication } from "../helpers/Authentication"
+import {AuthHeaders} from '../helpers/AuthHeaders'
 
 export const APIHelper = {
     Register,
@@ -8,6 +7,7 @@ export const APIHelper = {
     GetUserData
 };
 
+const API_URL = process.env.REACT_APP_API_URL;
 
 function Register(Email, UserName, Password, ConfirmPassword) {
 
@@ -17,7 +17,7 @@ function Register(Email, UserName, Password, ConfirmPassword) {
         body: JSON.stringify({ Email, UserName, Password, ConfirmPassword })
     };
 
-    return fetch('https://localhost:44342/api/Account/register', requestOptions)
+    return fetch(API_URL + '/api/Account/register', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -46,7 +46,7 @@ function LogIn(username, password) {
         body: body
     };
 
-    return fetch('https://localhost:44342/token', requestOptions)
+    return fetch(API_URL + '/token', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -63,18 +63,18 @@ function LogIn(username, password) {
 
 
 function GetUserData() {
-    let bearer = 'bearer ' + Authentication.LoadToken()
-    console.log(bearer)
+
+   let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': bearer
+            Authorization,
         },
     };
 
-   return fetch('https://localhost:44342/api/User', requestOptions)
+   return fetch( API_URL + '/api/User', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
