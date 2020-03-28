@@ -29,36 +29,10 @@ class RegisterForm extends Component {
 
     handleSubmit(event) {
         if (this.CanRegister()) {
-            this.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword)
-            //let info = APIHelper.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword);
-        }
-        event.preventDefault();
-    }
+            this.setState({ DuringOperation: true })
 
-
-    Register(Email, UserName, Password, ConfirmPassword) {
-        this.setState({ DuringOperation: true })
-
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Email, UserName, Password, ConfirmPassword })
-        };
-
-        fetch('https://localhost:44342/api/Account/register', requestOptions)
-            .then(response => {
-                // reject not ok response
-                if (!response.ok) {
-                    return Promise.reject(response)
-                }
-                return response.text()
-            })
-            // catch error response and extract the error message
-            .catch(async response => {
-                const error = await response.text().then(text => text)
-                return Promise.reject(error)
-            })
-            .then(data => {
+            let result = APIHelper.Register(this.state.Email, this.state.Login, this.state.Password, this.state.ConfirmPassword);
+            result.then(data => {
                 console.log("Rejestracja pomyślna! Możesz teraz się zalogować.")
                 this.setState({ InfoMessage: "Rejestracja pomyślna! Możesz teraz się zalogować." })
                 this.setState({ InfoMessageIsError: false })
@@ -87,11 +61,13 @@ class RegisterForm extends Component {
                     }
                 }
             })
-    };
+        }
+        event.preventDefault();
+    }
 
     CanRegister() {
         let output = false;
-        if (this.state.Email && this.state.Login && this.state.Password && this.state.ConfirmPassword) {
+        if (this.state.Email && this.state.Login && this.state.Password && this.state.ConfirmPassword && !this.state.DuringOperation) {
             if (this.state.Password === this.state.ConfirmPassword) {
                 output = true;
                 this.setState({ InfoMessageIsError: false })

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { Link, Redirect } from "react-router-dom";
 import { Authentication } from "../helpers/Authentication"
+import { APIHelper } from '../API/APIHelper';
 
 class LoginForm extends Component {
 
@@ -33,93 +34,45 @@ class LoginForm extends Component {
     }
 
     handleSubmit(event) {
-        this.LogIn(this.state.Login, this.state.Password)
+        this.setState({ DuringOperation: true })
+
+        let result = APIHelper.LogIn(this.state.Login, this.state.Password)
+        result.then(data => {
+            console.log("Zalogowano")
+            this.setState({ InfoMessage: "" })
+            this.setState({ DuringOperation: false })
+
+            Authentication.SaveToken(data.access_Token, this.state.RememberMe)
+            this.GetUserData();
+        })
+        .catch(error => {
+            //Connection problem
+            if (error == "TypeError: response.text is not a function") {
+                console.log('Problem z połączeniem')
+                this.setState({ InfoMessage: 'Problem z połączeniem' })
+                this.setState({ DuringOperation: false })
+            }
+            else {
+                try {
+                    var obj = JSON.parse(error)
+                    console.log(obj.message)
+                    this.setState({ InfoMessage: obj.message })
+                    this.setState({ DuringOperation: false })
+                }
+                //Another problem...
+                catch (error) {
+                    console.log(error);
+                }
+            }
+        })
+
         event.preventDefault();
     }
 
-    LogIn(username, password) {
-        this.setState({ DuringOperation: true })
-
-        let body = new URLSearchParams();
-        body.append("grant_type", "password");
-        body.append("username", username);
-        body.append("password", password);
-
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: body
-        };
-
-        fetch('https://localhost:44342/token', requestOptions)
-            .then(response => {
-                // reject not ok response
-                if (!response.ok) {
-                    return Promise.reject(response)
-                }
-                return response.json()
-            })
-            // catch error response and extract the error message
-            .catch(async response => {
-                const error = await response.text().then(text => text)
-                return Promise.reject(error)
-            })
-            .then(data => {
-                console.log("Zalogowano")
-                this.setState({ InfoMessage: "" })
-                this.setState({ DuringOperation: false })
-
-                Authentication.SaveToken(data.access_Token, this.state.RememberMe)
-                this.GetUserData();
-            })
-            .catch(error => {
-                //Connection problem
-                if (error == "TypeError: response.text is not a function") {
-                    console.log('Problem z połączeniem')
-                    this.setState({ InfoMessage: 'Problem z połączeniem' })
-                    this.setState({ DuringOperation: false })
-                }
-                else {
-                    try {
-                        var obj = JSON.parse(error)
-                        console.log(obj.message)
-                        this.setState({ InfoMessage: obj.message })
-                        this.setState({ DuringOperation: false })
-                    }
-                    //Another problem...
-                    catch (error) {
-                        console.log(error);
-                    }
-                }
-            })
-    };
-
     GetUserData() {
-        let bearer = 'bearer ' + Authentication.LoadToken()
-        console.log(bearer)
-
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': bearer
-            },
-        };
-
-        fetch('https://localhost:44342/api/User', requestOptions)
-            .then(response => {
-                // reject not ok response
-                if (!response.ok) {
-                    return Promise.reject(response)
-                }
-                return response.json()
-            })
-            // catch error response and extract the error message
-            .catch(async response => {
-                const error = await response.text().then(text => text)
-                return Promise.reject(error)
-            })
-            .then(data => {
+       let result = APIHelper.GetUserData()
+       
+       result.then(data => {
                 console.log("Pobrano dane użytkownika")
                 console.log(data)
                 Authentication.SaveUserData(data);
