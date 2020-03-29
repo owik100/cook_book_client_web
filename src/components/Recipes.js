@@ -48,21 +48,63 @@ class Recipes extends Component {
 
     DonwloadRecipeImage()
     {
+        const that = this;
+        let oldRecipies = this.state.Recipes
+        let urlsArray = []
+        var promises = [];
 
-        let iterator = 0;
-let newRecipes = [];
+        for (var i = 0; i < this.state.Recipes.length; i++)
+        {
+            urlsArray.push(this.state.Recipes[i].nameOfImage)
+        }
 
-        this.state.Recipes.forEach(function (item, key) {
-            
-           let result = RecipesEndPointAPI.DownloadImage(item.nameOfImage)
+
+       
+        Promise.all(
+
+            [
+                RecipesEndPointAPI.DownloadImage(urlsArray[0]),
+                RecipesEndPointAPI.DownloadImage(urlsArray[1])
+            ]
+        )
+            .then(function (data) {
+                // Log the data to the console
+                // You would do something with both sets of data here
+                 console.log(data);
+                 let outside = URL.createObjectURL(data[0])
+                 let outside1 = URL.createObjectURL(data[1])
+                let images =[]
+                images.push(outside)
+                images.push(outside1)
+
+                
+                oldRecipies[0].image=outside
+                oldRecipies[1].image=outside1
+
+                that.setState({ DuringOperation: false })
+                that.setState({ Recipes: oldRecipies })
+
+            }).catch(function (error) {
+                // if there's an error, log it
+                console.log(error);
+            });
+        
+
+    }
+
+
+
+    
+
+    Download(name)
+    {
+         let result = RecipesEndPointAPI.DownloadImage(name)
            result.then(data => {
             let outside = URL.createObjectURL(data)
             console.log(outside)
-            item.image = outside;
+           return result;
            //this.setState({ Recipes[item].image : })
-           newRecipes[iterator] = item;
-           iterator++;
-           this.setState({ RecipesImages: newRecipes })
+         
          
         })
         .catch(error => {
@@ -82,9 +124,7 @@ let newRecipes = [];
             }
         })
 
-        });
-
-       
+      
     }
 
     showImage() {
