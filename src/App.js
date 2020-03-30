@@ -5,6 +5,7 @@ import LoginForm from '../src/components/LoginForm';
 import Main from '../src/Main';
 import Recipes from '../src/components/Recipes'
 import {Authentication} from '../src/helpers/Authentication'
+import RecipePreview from '../src/components/RecipePreview'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import $ from 'jquery';
@@ -38,6 +39,8 @@ function App() {
           <PrivateRoute path="/Recipes">
             <Recipes />
           </PrivateRoute>
+          <Route path="/RecipePreview" render={(props) => <RecipePreview {...props}/>}/>
+
           <Route path="/">
             <Main />
           </Route>

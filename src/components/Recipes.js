@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
 import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns } from 'react-bootstrap';
+import { Link} from "react-router-dom";
 
 class Recipes extends Component {
 
@@ -107,7 +108,12 @@ class Recipes extends Component {
         else {
 
 const recipes = this.state.Recipes.map(item =>
-    <Card  className="SingleRecipe" key={item.recipeId}>
+    
+    <Card  as={Link} to={
+        { 
+            pathname: "/RecipePreview/",
+            myCustomProps: item
+        }} className="SingleRecipe" key={item.recipeId}>
         <Card.Img variant="top"  src={item.image} />
         <Card.Body>
         <Card.Title>
