@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
-import { Spinner, Container, Row, Col } from 'react-bootstrap';
+import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns } from 'react-bootstrap';
 
 class Recipes extends Component {
 
@@ -48,6 +48,7 @@ class Recipes extends Component {
     DonwloadRecipeImage() {
         let that = this
         let outside
+        this.setState({ DuringOperation: true })
 
         this.state.Recipes.forEach(function (item, key) {
 
@@ -66,21 +67,25 @@ class Recipes extends Component {
                     that.setState({
                         Recipes: that.state.Recipes.map(el => (el.recipeId === item.recipeId ? { ...el, item } : el))
                     });
+                    that.setState({ DuringOperation: false })
 
                 })
                     .catch(error => {
                         //Connection problem
                         if (error == "TypeError: response.text is not a function") {
                             console.log('Problem z połączeniem')
+                            that.setState({ DuringOperation: false })
                         }
                         else {
                             try {
                                 var obj = JSON.parse(error)
                                 console.log(obj.message)
+                                that.setState({ DuringOperation: false })
                             }
                             //Another problem...
                             catch (error) {
                                 console.log(error);
+                                that.setState({ DuringOperation: false })
                             }
                         }
                     })
@@ -101,18 +106,19 @@ class Recipes extends Component {
         }
         else {
 
-            const recipes = this.state.Recipes.map(item =>
-                <Col key={item.recipeId}>
-                    <p>{item.name}</p>
-                    <img className="img-fluid" src={item.image}></img>
-                </Col>)
-
+const recipes = this.state.Recipes.map(item =>
+    <Card  className="SingleRecipe" key={item.recipeId}>
+        <Card.Img variant="top"  src={item.image} />
+        <Card.Body>
+        <Card.Title>
+            {item.name}
+        </Card.Title>
+      </Card.Body>
+    </Card>)
             return (
-                <Container>
-                    <Row>
+                <CardGroup>
                         {recipes}
-                    </Row>
-                </Container>
+           </CardGroup>
             )
         }
 
