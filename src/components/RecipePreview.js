@@ -149,6 +149,9 @@ class RecipePreview extends Component {
                             <img className="img-fluid mx-auto d-block" src={this.state.Image}></img>
                         </Col>
 
+                        <Col  >
+                            <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to="/Recipes" >Powrót</Button>
+                        </Col>
 
                         <Col  >
                             <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" >Edytuj</Button>

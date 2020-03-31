@@ -37,18 +37,28 @@ function GetName() {
     }
 }
 
+function NavIfLogged(){
+
+   if (Authentication.LoadUserName() != null && Authentication.isAuthenticated()) {
+        return (
+            <Nav className="mr-auto">
+            <Nav.Link as={Link} to="/Recipes" >Moje przepisy</Nav.Link>
+        </Nav>
+        )
+    }
+    else {
+        return null;
+    }
+}
+
 function Header() {
     return (
         <header>
             <Navbar variant="dark" bg="primary" sticky="top" expand="lg">
-                <Navbar.Brand as={Link} to="/">Cook Book</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/Recipes">Cook Book</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                        <Nav.Link as={Link} to="/" >Home</Nav.Link>
-                        <Nav.Link as={Link} to="/Recipes" >Przepisy</Nav.Link>
-
-                    </Nav>
+                    {NavIfLogged()}
                     <Nav className="justify-content-end">
                         {GetName()}
                         {AuthButton()}
