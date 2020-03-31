@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
-import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns, Button } from 'react-bootstrap';
+import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns, Button, Modal } from 'react-bootstrap';
+import { Link, Redirect } from "react-router-dom";
 
 class RecipePreview extends Component {
 
@@ -12,43 +13,15 @@ class RecipePreview extends Component {
             Instructions: "",
             Ingredients: [],
             Image: "",
-            ID: ""
+            ID: "",
+            showModal: false,
+            RecipeDeleted: false
         }
-
-
-
-        // if(localStorage.getItem('recipeName')!=null)
-        // {
-        //     this.state = {
-        //         Name: localStorage.getItem('recipeName'),
-        //         Instructions: localStorage.getItem('recipeInstructions'),
-        //         Ingredients: localStorage.getItem('recipeIngredients'),
-        //         Image: localStorage.getItem('recipeImage'),
-        //     }
-        // }
-        // else{
-        //     this.state = {
-        //         Name: this.props.location.myCustomProps.item.name,
-        //         Instructions: this.props.location.myCustomProps.item.instruction,
-        //         Ingredients: this.props.location.myCustomProps.item.ingredients,
-        //         Image: this.props.location.myCustomProps.item.image,
-        //     }
-
-
-        //     localStorage.setItem('recipeName', this.state.Name);
-        //     localStorage.setItem('recipeInstructions', this.state.Instructions);
-        //     localStorage.setItem('recipeIngredients', this.state.ingredients);
-        //     localStorage.setItem('recipeImage', this.state.Image);
-
-
-
-
-
-
+        this.handleModalClose = this.handleModalClose.bind(this);
+        this.handleModalShow = this.handleModalShow.bind(this);
+        this.handleRecipeDelete = this.handleRecipeDelete.bind(this);
 
     }
-
-
 
     componentDidMount() {
 
@@ -75,13 +48,79 @@ class RecipePreview extends Component {
 
             this.setState({ Name: localStorage.getItem('recipeName') })
             this.setState({ Instructions: localStorage.getItem('recipeInstructions') })
-            this.setState({ Ingredients: localStorage.getItem('recipeIngredients') })
+            this.setState({ Ingredients: ['1'] })
             this.setState({ Image: localStorage.getItem('recipeImage') })
         }
 
     }
 
+    handleModalShow(event) {
+        this.setState({ showModal: true })
+
+    }
+
+    handleModalClose(event) {
+        this.setState({ showModal: false })
+
+    }
+
+    ModalDelete(props) {
+        return (
+            <Modal
+                {...props}
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        {props.name}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>
+                        Na pewno chcesz usunąć ten przepis? Operacji nie można cofnąć!
+              </p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={props.delete}>Usuń</Button>
+                    <Button variant="dark" onClick={props.onHide}>Cofnij</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+
+    handleRecipeDelete(event) {
+        let result = RecipesEndPointAPI.DeleteRecipes(this.state.ID)
+
+        result.then(data => {
+            console.log("Usunięto!")
+            this.setState({ RecipeDeleted: true })
+        })
+            .catch(error => {
+                //Connection problem
+                if (error == "TypeError: response.text is not a function") {
+                    console.log('Problem z połączeniem')
+                }
+                else {
+                    try {
+                        var obj = JSON.parse(error)
+                        console.log(obj.message)
+                    }
+                    //Another problem...
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+            })
+    }
+
+
     render() {
+
+        if (this.state.RecipeDeleted === true) {
+            return <Redirect to='/Recipes' />
+        }
+
         const ingredients = this.state.Ingredients.map(item =>
             <li>
                 {item}
@@ -89,16 +128,17 @@ class RecipePreview extends Component {
         )
 
         return (
-            <Container>
-                <Row>
-                    <Col md={12}>
-                    <h1 className="mt-3 mb-3 text-center">{this.state.Name}</h1>
-                    </Col>
-                      
-                    <Col md={12}>
-                    <p className="ml-2 mr-2" >{this.state.Instructions}</p>
-                    </Col>
-                               
+            <div>
+                <Container>
+                    <Row>
+                        <Col md={12}>
+                            <h1 className="mt-3 mb-3 text-center">{this.state.Name}</h1>
+                        </Col>
+
+                        <Col md={12}>
+                            <p className="ml-2 mr-2" >{this.state.Instructions}</p>
+                        </Col>
+
                         <Col md={4} className="align-self-center">
                             <ul>
                                 {ingredients}
@@ -106,19 +146,28 @@ class RecipePreview extends Component {
                         </Col>
 
                         <Col md={8}>
-                        <img className="img-fluid mx-auto d-block" src={this.state.Image}></img>
+                            <img className="img-fluid mx-auto d-block" src={this.state.Image}></img>
                         </Col>
 
 
                         <Col  >
-                        <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" >Edytuj</Button>
+                            <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" >Edytuj</Button>
                         </Col>
                         <Col  >
-                        <Button size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>
+                            <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>
                         </Col>
 
-                </Row>
-            </Container>
+                    </Row>
+                </Container>
+
+                <this.ModalDelete
+                    show={this.state.showModal}
+                    onHide={this.handleModalClose}
+                    name={this.state.Name}
+                    delete={this.handleRecipeDelete}
+                />
+
+            </div>
         )
     }
 }
