@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
 import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns, Button, Modal, Form, } from 'react-bootstrap';
 import { Link, Redirect } from "react-router-dom";
+import bsCustomFileInput from 'bs-custom-file-input'
 
 class AddOrEdit extends Component {
 
@@ -16,14 +17,18 @@ class AddOrEdit extends Component {
             Instructions: "",
             Ingredients: [],
             Image: null,
-            ImageName: "",
-            ID: ""
+            ID: "",
+            OperationComplete: false
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onChangeFile =this.onChangeFile.bind(this);
     }
+
+    componentDidMount() {
+        bsCustomFileInput.init()
+      }
 
     
     handleChange(event) {
@@ -47,6 +52,7 @@ class AddOrEdit extends Component {
             result.then(data => {
                 console.log("Przepis dodany")
                 this.setState({ DuringOperation: false })
+                this.setState({ OperationComplete: true })
             })
             .catch(error => {
                 //Connection problem
@@ -108,7 +114,14 @@ class AddOrEdit extends Component {
     }
 
     render() {
+
+
+        if (this.state.OperationComplete === true) {
+            return <Redirect to='/Recipes' />
+        }
+
         return (
+            
             <div class="container">
                 <div class="row">
                     <div class="col">
@@ -132,12 +145,11 @@ class AddOrEdit extends Component {
                                 <Form.Control type="text" placeholder="Składniki" name="Ingredients" required onChange={this.handleChange} value={this.state.Ingredients} />
                             </Form.Group>
 
-                            <Form.Group controlId="formImage">
-                                <Form.Label>Obrazek</Form.Label>
-                                <Form.File id="custom-file" accept="image/*"
-    label="Custom file input"
-    custom name="Image" onChange={this.onChangeFile} />
-                            </Form.Group>
+                            <div class="custom-file">
+                                <input id="formFile" type="file" class="custom-file-input" accept="image/*" onChange={this.onChangeFile} />
+                                <label class="custom-file-label" for="inputGroupFile01">Wybierz obrazek</label>
+                            </div>
+
                             <div class="d-flex justify-content-center">
                                 <Button variant="primary" type="submit">
                                     Dodaj
