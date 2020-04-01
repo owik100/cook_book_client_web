@@ -37,13 +37,14 @@ function GetName() {
     }
 }
 
-function NavIfLogged(){
+function NavIfLogged() {
 
-   if (Authentication.LoadUserName() != null && Authentication.isAuthenticated()) {
+    if (Authentication.LoadUserName() != null && Authentication.isAuthenticated()) {
         return (
             <Nav className="mr-auto">
-            <Nav.Link as={Link} to="/Recipes" >Moje przepisy</Nav.Link>
-        </Nav>
+                <Nav.Link as={Link} to="/Edit" >Dodaj przepis</Nav.Link>
+                <Nav.Link as={Link} to="/Recipes" >Moje przepisy</Nav.Link>
+            </Nav>
         )
     }
     else {

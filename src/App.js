@@ -23,6 +23,7 @@ import {
 } from "react-router-dom";
 
 import RegisterForm from './components/RegisterForm';
+import AddOrEdit from './components/AddOrEdit';
 
 function App() {
   return (
@@ -41,9 +42,13 @@ function App() {
           </PrivateRoute>
           <Route path="/RecipePreview" render={(props) => <RecipePreview {...props}/>}/>
 
-          <Route path="/">
-            <Main />
-          </Route>
+          <PrivateRoute path="/Edit" >
+            <AddOrEdit/>
+          </PrivateRoute>
+
+          <PrivateRoute path="/">
+          <Recipes />
+          </PrivateRoute>
         </Switch>
       </Router>
     </div>
