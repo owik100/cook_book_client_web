@@ -15,7 +15,9 @@ class AddOrEdit extends Component {
             CanSubmit: false,
             RecipeName: "",
             Instructions: "",
-            Ingredients: [],
+            Ingredients: ['Apple', 'Banana', 'Orange'],
+            IngredientsInput: "",
+            SelectedIngredient : "",
             Image: null,
             ID: "",
             OperationComplete: false
@@ -25,6 +27,8 @@ class AddOrEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onChangeFile = this.onChangeFile.bind(this);
         this.handleIngredientAdd = this.handleIngredientAdd.bind(this);
+        this.handleRecipeClick = this.handleRecipeClick.bind(this);
+        this.handleIngredientRemove = this.handleIngredientRemove.bind(this);
     }
 
     componentDidMount() {
@@ -41,7 +45,25 @@ class AddOrEdit extends Component {
 
     handleIngredientAdd(e)
     {
+        const { IngredientsInput, Ingredients } = this.state;
 
+        const nextState = [...Ingredients, IngredientsInput];
+        this.setState({ Ingredients: nextState, IngredientsInput: '' });
+    }
+
+    handleRecipeClick(e)
+    {
+        this.setState({SelectedIngredient :e.target.innerHTML })
+        
+      
+        console.log(e.target.innerHTML)
+    }
+
+    handleIngredientRemove(e)
+    {
+        const {  Ingredients,SelectedIngredient  } = this.state;
+        const nextState = Ingredients.filter(x => x !== SelectedIngredient)
+        this.setState({ Ingredients: nextState, SelectedIngredient: ""});
     }
 
     onChangeFile(e) {
@@ -53,7 +75,7 @@ class AddOrEdit extends Component {
         if (this.CanSubmit()) {
             this.setState({ DuringOperation: true })
 
-            let result = RecipesEndPointAPI.InsertRecipe(this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image, this.state.ImageName)
+            let result = RecipesEndPointAPI.InsertRecipe(this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image)
             result.then(data => {
                 console.log("Przepis dodany")
                 this.setState({ DuringOperation: false })
@@ -125,6 +147,15 @@ class AddOrEdit extends Component {
             return <Redirect to='/Recipes' />
         }
 
+        if(this.state.SelectedIngredient === item ? active : null)
+
+
+        const ingredients = this.state.Ingredients.map(item =>
+            <ListGroup.Item as="li" action className={} onClick={this.handleRecipeClick}>
+                {item}
+                </ListGroup.Item>
+        )
+
         return (
 
             <Form id="registerForm" onSubmit={this.handleSubmit}>
@@ -157,15 +188,15 @@ class AddOrEdit extends Component {
                             <Form.Group controlId="formIngredients">
                                 {/* <Form.Label>Składniki</Form.Label> */}
                                 <h3 className="text-center">Składniki:</h3>
-                                <Form.Control type="text" name="Ingredients" required onChange={this.handleChange} value={this.state.Ingredients} />
+                                <Form.Control type="text" name="IngredientsInput" required onChange={this.handleChange} value={this.state.IngredientsInput} />
                             </Form.Group>
 
                             <div class="d-flex justify-content-center mb-3">
-                            <Button onClick={this.handleIngredientAdd} className="mr-3">Dodaj</Button>
-                            <Button>Usuń</Button>
+                            <Button disabled={!this.state.IngredientsInput} onClick={this.handleIngredientAdd} className="mr-3">Dodaj</Button>
+                            <Button disabled={!this.state.SelectedIngredient} onClick={this.handleIngredientRemove}>Usuń</Button>
                             </div>
-                            <ListGroup id="IngredientsGroup">
-
+                            <ListGroup id="IngredientsGroup" as="ul">
+                                {ingredients}
                             </ListGroup>
                         </Col>
 
