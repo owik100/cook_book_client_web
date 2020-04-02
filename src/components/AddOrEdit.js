@@ -15,9 +15,9 @@ class AddOrEdit extends Component {
             CanSubmit: false,
             RecipeName: "",
             Instructions: "",
-            Ingredients: ['Apple', 'Banana', 'Orange'],
+            Ingredients: [],
             IngredientsInput: "",
-            SelectedIngredient : "",
+            SelectedIngredient: "",
             Image: null,
             ID: "",
             OperationComplete: false
@@ -43,32 +43,38 @@ class AddOrEdit extends Component {
         })
     }
 
-    handleIngredientAdd(e)
-    {
+    handleIngredientAdd(e) {
         const { IngredientsInput, Ingredients } = this.state;
 
         const nextState = [...Ingredients, IngredientsInput];
         this.setState({ Ingredients: nextState, IngredientsInput: '' });
     }
 
-    handleRecipeClick(e)
-    {
-        this.setState({SelectedIngredient :e.target.innerHTML })
-        
-      
+    handleRecipeClick(e) {
+        this.setState({ SelectedIngredient: e.target.innerHTML })
+
+
         console.log(e.target.innerHTML)
     }
 
-    handleIngredientRemove(e)
-    {
-        const {  Ingredients,SelectedIngredient  } = this.state;
+    handleIngredientRemove(e) {
+        const { Ingredients, SelectedIngredient } = this.state;
         const nextState = Ingredients.filter(x => x !== SelectedIngredient)
-        this.setState({ Ingredients: nextState, SelectedIngredient: ""});
+        this.setState({ Ingredients: nextState, SelectedIngredient: "" });
     }
 
     onChangeFile(e) {
-        this.setState({ Image: e.target.files[0] })
-        this.setState({ ImageName: e.target.files[0].name })
+        this.setState({ InfoMessage: "" })
+        let fileName = e.target.files[0].name
+        let fileExt = fileName.split('.').pop()
+
+        if (fileExt === "jpg" || fileExt === "jpeg" || fileExt === "gif" || fileExt === "png") {
+            this.setState({ Image: e.target.files[0] })
+            this.setState({ ImageName: fileName })
+        }
+        else {
+            this.setState({ InfoMessage: "Wybierz poprawny format pliku!" })
+        }
     }
 
     handleSubmit(event) {
@@ -107,13 +113,13 @@ class AddOrEdit extends Component {
 
     CanSubmit() {
         let output = false;
-        if (this.state.RecipeName && this.state.Instructions && this.state.Ingredients && !this.state.DuringOperation) {
+        if (this.state.RecipeName && this.state.Instructions && this.state.Ingredients.length > 0 && !this.state.DuringOperation && this.state.InfoMessage == "") {
             output = true;
         }
         return output;
     }
 
-    RegisterMessage() {
+    SubmitMessage() {
         if (this.state.DuringOperation) {
             return (
                 <div class="d-flex justify-content-center">
@@ -123,20 +129,10 @@ class AddOrEdit extends Component {
                 </div>
             )
         }
-        else {
-            if (this.state.InfoMessage != "" && this.state.InfoMessageIsError == false) {
-                return (
-                    <h2 className="display-5 text-center text-success ">{this.state.InfoMessage}</h2>
-                );
-            }
-            else if (this.state.InfoMessage != "" && this.state.InfoMessageIsError == true) {
-                return (
-                    <h2 className="display-5 text-center text-danger ">{this.state.InfoMessage}</h2>
-                );
-            }
-            else {
-                return null
-            }
+        else if (this.state.InfoMessage != "") {
+            return (
+                <h2 className="display-5 text-center text-alert ">{this.state.InfoMessage}</h2>
+            );
         }
     }
 
@@ -150,7 +146,7 @@ class AddOrEdit extends Component {
         const ingredients = this.state.Ingredients.map(item =>
             <ListGroup.Item as="li" active={this.state.SelectedIngredient === item} className="Clickable" action onClick={this.handleRecipeClick}>
                 {item}
-                </ListGroup.Item>
+            </ListGroup.Item>
         )
 
         return (
@@ -159,14 +155,12 @@ class AddOrEdit extends Component {
 
                 <Container>
                     <Row>
-
-
                         <Col md={12}>
-                            {this.RegisterMessage()}
+                            {this.SubmitMessage()}
 
                             <Form.Group controlId="formName">
                                 {/* <Form.Label   className="text-center" style={{width: "100%"}}>Nazwa przepisu:</Form.Label> */}
-                                <h3 className="text-center">Nazwa przepisu:</h3>
+                                <h3 className="text-center mt-3">Nazwa przepisu:</h3>
                                 <Form.Control type="text" size="lg" name="RecipeName" required onChange={this.handleChange} value={this.state.RecipeName} />
                             </Form.Group>
                         </Col>
@@ -185,71 +179,42 @@ class AddOrEdit extends Component {
                             <Form.Group controlId="formIngredients">
                                 {/* <Form.Label>Składniki</Form.Label> */}
                                 <h3 className="text-center">Składniki:</h3>
-                                <Form.Control type="text" name="IngredientsInput" required onChange={this.handleChange} value={this.state.IngredientsInput} />
+                                <Form.Control type="text" name="IngredientsInput" onChange={this.handleChange} value={this.state.IngredientsInput} />
                             </Form.Group>
 
                             <div class="d-flex justify-content-center mb-3">
-                            <Button disabled={!this.state.IngredientsInput} onClick={this.handleIngredientAdd} className="mr-3">Dodaj</Button>
-                            <Button disabled={!this.state.SelectedIngredient} onClick={this.handleIngredientRemove}>Usuń</Button>
+                                <Button disabled={!this.state.IngredientsInput} onClick={this.handleIngredientAdd} className="mr-3">Dodaj</Button>
+                                <Button disabled={!this.state.SelectedIngredient} onClick={this.handleIngredientRemove}>Usuń</Button>
                             </div>
                             <ListGroup id="IngredientsGroup" as="ul">
                                 {ingredients}
                             </ListGroup>
                         </Col>
 
-
-
                         <Col md={12}>
                             <h3 className="text-center">Obrazek:</h3>
                             <div class="custom-file mb-3">
-                                <input id="formFile" type="file" class="custom-file-input" accept="image/*" onChange={this.onChangeFile} />
+                                <input id="formFile" type="file" class="custom-file-input" accept=".png, .jpg, .jpeg, .gif" onChange={this.onChangeFile} />
                                 <label class="custom-file-label" for="inputGroupFile01">Wybierz obrazek</label>
                             </div>
 
                             <div class="d-flex justify-content-center">
-                                <Button variant="primary" type="submit" size="lg">
+                                <Button variant="primary" type="submit" size="lg" disabled={!this.CanSubmit()}>
                                     Dodaj
     </Button>
                             </div>
 
-
                             <div class="d-flex justify-content-center mb-3">
-                    <Button variant="outline-primary" as={Link} to="/Login" className="mt-3"  >
-                         Wróć
+                                <Button variant="outline-primary" as={Link} to="/Login" className="mt-3"  >
+                                    Wróć
              </Button>
-                 </div>
-      
-
+                            </div>
                         </Col>
-
-
-
-
-
-
-
-
                         <Col>
-
                         </Col>
                     </Row>
                 </Container>
-
             </Form>
-
-            // <div class="container">
-            //     <div class="row">
-            //         <div class="col">
-
-
-            //         </div>
-            //     </div>
-            //     <div class="d-flex justify-content-center mb-3">
-            //         <Button variant="outline-primary" as={Link} to="/Login" className="mt-3"  >
-            //             Wróć
-            // </Button>
-            //     </div>
-            // </div>
 
         )
     }
