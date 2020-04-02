@@ -94,9 +94,11 @@ function DeleteRecipes(id)
 }
 
 
-function InsertRecipe(RecipeName, Instructions, Ingredients, Image)
+function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image)
 {
     let Authorization = AuthHeaders.GetBearer()
+
+    let Ingredients = IngredientsArr.join(";");
 
     var formdata = new FormData();
 formdata.append("Name", RecipeName);

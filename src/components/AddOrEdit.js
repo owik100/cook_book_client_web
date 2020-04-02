@@ -147,11 +147,8 @@ class AddOrEdit extends Component {
             return <Redirect to='/Recipes' />
         }
 
-        if(this.state.SelectedIngredient === item ? active : null)
-
-
         const ingredients = this.state.Ingredients.map(item =>
-            <ListGroup.Item as="li" action className={} onClick={this.handleRecipeClick}>
+            <ListGroup.Item as="li" active={this.state.SelectedIngredient === item} className="Clickable" action onClick={this.handleRecipeClick}>
                 {item}
                 </ListGroup.Item>
         )
