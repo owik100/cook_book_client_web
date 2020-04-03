@@ -111,7 +111,7 @@ const recipes = this.state.Recipes.map(item =>
     
     <Card  as={Link} to={
         { 
-            pathname: "/RecipePreview/",
+            pathname: `/RecipePreview/${item.recipeId}`,
             myCustomProps: item
         }} className="SingleRecipe" key={item.recipeId}>
         <Card.Img variant="top"  src={item.image} />

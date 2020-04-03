@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
 import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns, Button, Modal } from 'react-bootstrap';
 import { Link, Redirect } from "react-router-dom";
+export * from 'react-router';
 
 class RecipePreview extends Component {
 
@@ -13,9 +14,11 @@ class RecipePreview extends Component {
             Instructions: "",
             Ingredients: [],
             Image: "",
+            nameOfImage: "",
             ID: "",
             showModal: false,
-            RecipeDeleted: false
+            RecipeDeleted: false,
+            DuringOperation: false,
         }
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleModalShow = this.handleModalShow.bind(this);
@@ -25,6 +28,8 @@ class RecipePreview extends Component {
 
     componentDidMount() {
 
+        //Pobierz przepis z przeslanych propsow. Gdy strona odswiezana/ nie ma propsow, pobierz z API
+        console.log(this.props.match.params.id)
         try {
             this.setState({ Name: this.props.location.myCustomProps.item.name })
             this.setState({ Instructions: this.props.location.myCustomProps.item.instruction })
@@ -32,27 +37,87 @@ class RecipePreview extends Component {
             this.setState({ Image: this.props.location.myCustomProps.item.image })
             this.setState({ ID: this.props.location.myCustomProps.item.recipeId })
 
-            localStorage.setItem('recipeName', this.props.location.myCustomProps.item.name);
-            localStorage.setItem('recipeInstructions', this.props.location.myCustomProps.item.instruction);
-            localStorage.setItem('recipeIngredients', this.props.location.myCustomProps.item.ingredients);
-            localStorage.setItem('recipeImage', this.props.location.myCustomProps.item.image);
-
-            localStorage.setItem('all', this.props.location.myCustomProps.item);
 
         } catch (error) {
+            this.setState({ DuringOperation: true })
 
-            let a1 = localStorage.getItem('recipeName')
-            let a2 = localStorage.getItem('recipeInstructions')
-            let a3 = localStorage.getItem('recipeIngredients')
-            let a4 = localStorage.getItem('recipeImage')
+            let result = RecipesEndPointAPI.GetRecipeByID(this.props.match.params.id)
+            result.then(data => {
+                console.log("Pobrano przepis ")
+                console.log(data)
+                this.setState({ Name: data.name })
+                this.setState({ Instructions: data.instruction })
+                this.setState({ Ingredients: data.ingredients })
+                this.setState({ nameOfImage: data.nameOfImage })
+                this.setState({ ID: data.recipeId })
 
-            this.setState({ Name: localStorage.getItem('recipeName') })
-            this.setState({ Instructions: localStorage.getItem('recipeInstructions') })
-            this.setState({ Ingredients: ['1'] })
-            this.setState({ Image: localStorage.getItem('recipeImage') })
+                this.setState({ DuringOperation: false })
+                this.DonwloadRecipeImage();
+            })
+                .catch(error => {
+                    //Connection problem
+                    if (error == "TypeError: response.text is not a function") {
+                        console.log('Problem z połączeniem')
+                        this.setState({ DuringOperation: false })
+                    }
+                    else {
+                        try {
+                            var obj = JSON.parse(error)
+                            console.log(obj.message)
+                            this.setState({ DuringOperation: false })
+                        }
+                        //Another problem...
+                        catch (error) {
+                            console.log(error);
+                            this.setState({ DuringOperation: false })
+                        }
+                    }
+                })
         }
 
     }
+
+    DonwloadRecipeImage() {
+        let that = this
+        let outside
+
+        if (this.state.nameOfImage === null) {
+            this.setState({ Image: '/food template.png' })
+        }
+        else {
+
+            this.setState({ DuringOperation: true })
+            let result = RecipesEndPointAPI.DownloadImage(this.state.nameOfImage)
+            result.then(data => {
+                console.log("Pobrano obrazek")
+                console.log(data)
+                outside = URL.createObjectURL(data)
+                this.setState({ Image: outside })
+                console.log(outside)
+                this.setState({ DuringOperation: false })
+            })
+                .catch(error => {
+                    //Connection problem
+                    if (error == "TypeError: response.text is not a function") {
+                        console.log('Problem z połączeniem')
+                        this.setState({ DuringOperation: false })
+                    }
+                    else {
+                        try {
+                            var obj = JSON.parse(error)
+                            console.log(obj.message)
+                            this.setState({ DuringOperation: false })
+                        }
+                        //Another problem...
+                        catch (error) {
+                            console.log(error);
+                            this.setState({ DuringOperation: false })
+                        }
+                    }
+                })
+        }
+    }
+
 
     handleModalShow(event) {
         this.setState({ showModal: true })
@@ -124,54 +189,67 @@ class RecipePreview extends Component {
         const ingredients = this.state.Ingredients.map(item =>
             <li>
                 {item}
-            </li>
-        )
+            </li>)
 
-        return (
-            <div>
-                <Container>
-                    <Row>
-                        <Col md={12}>
-                            <h1 className="mt-3 mb-3 text-center">{this.state.Name}</h1>
-                        </Col>
+        if (this.state.DuringOperation) {
+            return (
 
-                        <Col md={12}>
-                            <p className="ml-2 mr-2" >{this.state.Instructions}</p>
-                        </Col>
+                <div class="d-flex justify-content-center Center">
+                    <Spinner animation="grow" variant="primary" role="status">
+                        <span className="sr-only my-auto mx-auto">Loading...</span>
+                    </Spinner>
+                </div>
+            )
+        }
+        else {
 
-                        <Col md={4} className="align-self-center">
-                            <ul>
-                                {ingredients}
-                            </ul>
-                        </Col>
+            return (
 
-                        <Col md={8}>
-                            <img className="img-fluid mx-auto d-block" src={this.state.Image}></img>
-                        </Col>
+                <div>
+                    <Container>
+                        <Row>
+                            <Col md={12}>
+                                <h1 className="mt-3 mb-3 text-center">{this.state.Name}</h1>
+                            </Col>
 
-                        <Col  >
-                            <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to="/Recipes" >Powrót</Button>
-                        </Col>
+                            <Col md={12}>
+                                <p className="ml-2 mr-2" >{this.state.Instructions}</p>
+                            </Col>
 
-                        <Col  >
-                            <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" >Edytuj</Button>
-                        </Col>
-                        <Col  >
-                            <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>
-                        </Col>
+                            <Col md={4} className="align-self-center">
+                                <ul>
+                                    {ingredients}
+                                </ul>
+                            </Col>
 
-                    </Row>
-                </Container>
+                            <Col md={8}>
+                                <img className="img-fluid mx-auto d-block" src={this.state.Image}></img>
+                            </Col>
 
-                <this.ModalDelete
-                    show={this.state.showModal}
-                    onHide={this.handleModalClose}
-                    name={this.state.Name}
-                    delete={this.handleRecipeDelete}
-                />
+                            <Col  >
+                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to="/Recipes" >Powrót</Button>
+                            </Col>
 
-            </div>
-        )
+                            <Col  >
+                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" >Edytuj</Button>
+                            </Col>
+                            <Col  >
+                                <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>
+                            </Col>
+
+                        </Row>
+                    </Container>
+
+                    <this.ModalDelete
+                        show={this.state.showModal}
+                        onHide={this.handleModalClose}
+                        name={this.state.Name}
+                        delete={this.handleRecipeDelete}
+                    />
+
+                </div>
+            )
+        }
     }
 }
 
