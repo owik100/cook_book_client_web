@@ -6,10 +6,11 @@ import bsCustomFileInput from 'bs-custom-file-input'
 
 class AddOrEdit extends Component {
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
         this.state = {
+            Edit : false,
             InfoMessage: "",
             DuringOperation: false,
             CanSubmit: false,
@@ -33,6 +34,25 @@ class AddOrEdit extends Component {
 
     componentDidMount() {
         bsCustomFileInput.init()
+        console.log(this.props.match.params.id)
+        console.log(this.props.location.myCustomProps)
+
+        try {
+            if (this.props.match.params.id != 0) {
+                this.setState({ Edit: true })
+            }
+
+            this.setState({ RecipeName: this.props.location.myCustomProps.Name})
+            this.setState({ Instructions: this.props.location.myCustomProps.Instructions })
+            this.setState({ Ingredients: this.props.location.myCustomProps.Ingredients })
+            this.setState({ Image: this.props.location.myCustomProps.Image })
+            this.setState({ ID: this.props.location.myCustomProps.ID })
+
+           
+        } catch (error) {
+            //Pobieramy...
+        }
+
     }
 
 
@@ -71,6 +91,21 @@ class AddOrEdit extends Component {
         if (fileExt === "jpg" || fileExt === "jpeg" || fileExt === "gif" || fileExt === "png") {
             this.setState({ Image: e.target.files[0] })
             this.setState({ ImageName: fileName })
+
+            var file = e.target.files[0];
+            var reader = new FileReader();
+            var url = reader.readAsDataURL(file);
+
+            reader.onloadend = function (e) {
+                this.setState({
+                    Image: [reader.result]
+                })
+              }.bind(this);
+            console.log(url) // Would see a path?
+            // TODO: concat files
+          
+
+
         }
         else {
             this.setState({ InfoMessage: "Wybierz poprawny format pliku!" })
@@ -193,14 +228,23 @@ class AddOrEdit extends Component {
 
                         <Col md={12}>
                             <h3 className="text-center">Obrazek:</h3>
+                            </Col>
+
+                            <Col md={8}>
                             <div class="custom-file mb-3">
                                 <input id="formFile" type="file" class="custom-file-input" accept=".png, .jpg, .jpeg, .gif" onChange={this.onChangeFile} />
                                 <label class="custom-file-label" for="inputGroupFile01">Wybierz obrazek</label>
+                                
                             </div>
-
+                            </Col>
+                           
+                            <Col md={4}>
+                            <img className="smallImg mx-auto d-block mb-3" src={this.state.Image} />
+                            </Col>
+                            <Col md={12}>
                             <div class="d-flex justify-content-center">
                                 <Button variant="primary" type="submit" size="lg" disabled={!this.CanSubmit()}>
-                                    Dodaj
+                                    {this.state.Edit ? "Zaaktualizuj przepis" : "Dodaj przepis"}
     </Button>
                             </div>
 
@@ -209,9 +253,10 @@ class AddOrEdit extends Component {
                                     Wróć
              </Button>
                             </div>
-                        </Col>
-                        <Col>
-                        </Col>
+                            </Col>
+
+                            
+
                     </Row>
                 </Container>
             </Form>

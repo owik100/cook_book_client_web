@@ -231,7 +231,11 @@ class RecipePreview extends Component {
                             </Col>
 
                             <Col  >
-                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" >Edytuj</Button>
+                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={
+                                    {
+                                        pathname: `/Edit/${this.state.ID}`,
+                                        myCustomProps: this.state
+                                    }}  >Edytuj</Button>
                             </Col>
                             <Col  >
                                 <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>

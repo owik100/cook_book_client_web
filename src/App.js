@@ -42,9 +42,7 @@ function App() {
           </PrivateRoute>
           <Route path="/RecipePreview/:id" render={(props) => <RecipePreview {...props}/>}/>
 
-          <PrivateRoute path="/Edit" >
-            <AddOrEdit/>
-          </PrivateRoute>
+          <Route path="/Edit/:id" render={(props) => <AddOrEdit {...props}/>}/>
 
           <PrivateRoute path="/">
           <Recipes />

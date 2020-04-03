@@ -44,3 +44,8 @@
 .Clickable{
   cursor: pointer;
 }
+
+.smallImg{
+  max-width: 100px;
+  max-height: 100px;
+}

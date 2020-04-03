@@ -42,7 +42,7 @@ function NavIfLogged() {
     if (Authentication.LoadUserName() != null && Authentication.isAuthenticated()) {
         return (
             <Nav className="mr-auto">
-                <Nav.Link as={Link} to="/Edit" >Dodaj przepis</Nav.Link>
+                <Nav.Link as={Link} to="/Edit/0" >Dodaj przepis</Nav.Link>
                 <Nav.Link as={Link} to="/Recipes" >Moje przepisy</Nav.Link>
             </Nav>
         )
