@@ -40,19 +40,98 @@ class AddOrEdit extends Component {
         try {
             if (this.props.match.params.id != 0) {
                 this.setState({ Edit: true })
+        
+                   //Jezeli edytujemy, wez dane z prospow
+                this.setState({ RecipeName: this.props.location.myCustomProps.Name})
+                this.setState({ Instructions: this.props.location.myCustomProps.Instructions })
+                this.setState({ Ingredients: this.props.location.myCustomProps.Ingredients })
+                this.setState({ Image: this.props.location.myCustomProps.Image })
+                this.setState({ ID: this.props.location.myCustomProps.ID })
             }
-
-            this.setState({ RecipeName: this.props.location.myCustomProps.Name})
-            this.setState({ Instructions: this.props.location.myCustomProps.Instructions })
-            this.setState({ Ingredients: this.props.location.myCustomProps.Ingredients })
-            this.setState({ Image: this.props.location.myCustomProps.Image })
-            this.setState({ ID: this.props.location.myCustomProps.ID })
-
-           
+            
+         //Jak nie da rady pobierz z API
         } catch (error) {
-            //Pobieramy...
+            this.setState({ DuringOperation: true })
+
+            let result = RecipesEndPointAPI.GetRecipeByID(this.props.match.params.id)
+            result.then(data => {
+                console.log("Pobrano przepis ")
+                console.log(data)
+                this.setState({ RecipeName: data.name })
+                this.setState({ Instructions: data.instruction })
+                this.setState({ Ingredients: data.ingredients })
+                this.setState({ nameOfImage: data.nameOfImage })
+                this.setState({ ID: data.recipeId })
+
+                this.setState({ DuringOperation: false })
+                this.DonwloadRecipeImage();
+            })
+                .catch(error => {
+                    //Connection problem
+                    if (error == "TypeError: response.text is not a function") {
+                        console.log('Problem z połączeniem')
+                        this.setState({ DuringOperation: false })
+                    }
+                    else {
+                        try {
+                            var obj = JSON.parse(error)
+                            console.log(obj.message)
+                            this.setState({ DuringOperation: false })
+                        }
+                        //Another problem...
+                        catch (error) {
+                            console.log(error);
+                            this.setState({ DuringOperation: false })
+                        }
+                    }
+                })
         }
 
+        
+
+    }
+
+
+
+    DonwloadRecipeImage() {
+        let that = this
+        let outside
+
+        if (this.state.nameOfImage === null) {
+            this.setState({ Image: '/food template.png' })
+        }
+        else {
+
+            this.setState({ DuringOperation: true })
+            let result = RecipesEndPointAPI.DownloadImage(this.state.nameOfImage)
+            result.then(data => {
+                console.log("Pobrano obrazek")
+                console.log(data)
+                outside = URL.createObjectURL(data)
+                this.setState({ Image: outside })
+                console.log(outside)
+                this.setState({ DuringOperation: false })
+            })
+                .catch(error => {
+                    //Connection problem
+                    if (error == "TypeError: response.text is not a function") {
+                        console.log('Problem z połączeniem')
+                        this.setState({ DuringOperation: false })
+                    }
+                    else {
+                        try {
+                            var obj = JSON.parse(error)
+                            console.log(obj.message)
+                            this.setState({ DuringOperation: false })
+                        }
+                        //Another problem...
+                        catch (error) {
+                            console.log(error);
+                            this.setState({ DuringOperation: false })
+                        }
+                    }
+                })
+        }
     }
 
 
@@ -116,7 +195,36 @@ class AddOrEdit extends Component {
         if (this.CanSubmit()) {
             this.setState({ DuringOperation: true })
 
-            let result = RecipesEndPointAPI.InsertRecipe(this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image)
+            if(this.state.Edit)
+            {
+                let result = RecipesEndPointAPI.PutRecipes(this.state.ID, this.state.ID, this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image)
+                result.then(data => {
+                    console.log("Przepis zaktualizowany")
+                    this.setState({ DuringOperation: false })
+                    this.setState({ OperationComplete: true })
+                })
+                    .catch(error => {
+                        //Connection problem
+                        if (error == "TypeError: response.text is not a function") {
+                            console.log('Problem z połączeniem')
+                            this.setState({ DuringOperation: false })
+                        }
+                        else {
+                            try {
+                                var obj = JSON.parse(error)
+                                console.log(obj.message)
+                                this.setState({ InfoMessage: obj.message })
+                                this.setState({ DuringOperation: false })
+                            }
+                            //Another problem...
+                            catch (error) {
+                                console.log(error);
+                            }
+                        }
+                    })
+            }
+            else{
+                let result = RecipesEndPointAPI.InsertRecipe(this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image)
             result.then(data => {
                 console.log("Przepis dodany")
                 this.setState({ DuringOperation: false })
@@ -141,6 +249,9 @@ class AddOrEdit extends Component {
                         }
                     }
                 })
+            }
+
+            
         }
         event.preventDefault();
     }
@@ -183,6 +294,18 @@ class AddOrEdit extends Component {
                 {item}
             </ListGroup.Item>
         )
+
+        if (this.state.DuringOperation) {
+            return (
+
+                <div class="d-flex justify-content-center Center">
+                    <Spinner animation="grow" variant="primary" role="status">
+                        <span className="sr-only my-auto mx-auto">Loading...</span>
+                    </Spinner>
+                </div>
+            )
+        }
+        else {
 
         return (
 
@@ -263,7 +386,7 @@ class AddOrEdit extends Component {
 
         )
     }
-}
+}}
 
 
 export default AddOrEdit
