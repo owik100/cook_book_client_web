@@ -159,7 +159,7 @@ formdata.append("Image",Image);
         })
 }
 
-function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image)
+function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image, NameOfImage)
 {
     let Authorization = AuthHeaders.GetBearer()
 
@@ -170,6 +170,7 @@ formdata.append("Name", RecipeName);
 formdata.append("Instruction", Instructions);
 formdata.append("Ingredients", Ingredients);
 formdata.append("Image",Image);
+formdata.append("NameOfImage",NameOfImage);
 formdata.append("RecipeId",RecipeId);
 
     const requestOptions = {

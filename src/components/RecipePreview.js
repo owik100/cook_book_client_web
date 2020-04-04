@@ -36,6 +36,7 @@ class RecipePreview extends Component {
             this.setState({ Ingredients: this.props.location.myCustomProps.item.ingredients })
             this.setState({ Image: this.props.location.myCustomProps.item.image })
             this.setState({ ID: this.props.location.myCustomProps.item.recipeId })
+            this.setState({ nameOfImage: this.props.location.myCustomProps.item.nameOfImage })
 
 
         } catch (error) {

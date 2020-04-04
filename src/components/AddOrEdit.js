@@ -20,6 +20,8 @@ class AddOrEdit extends Component {
             IngredientsInput: "",
             SelectedIngredient: "",
             Image: null,
+            ImagePreview: null,
+            ImageName: "",
             ID: "",
             OperationComplete: false
         }
@@ -30,6 +32,7 @@ class AddOrEdit extends Component {
         this.handleIngredientAdd = this.handleIngredientAdd.bind(this);
         this.handleRecipeClick = this.handleRecipeClick.bind(this);
         this.handleIngredientRemove = this.handleIngredientRemove.bind(this);
+        this.DeleteImage = this.DeleteImage.bind(this);
     }
 
     componentDidMount() {
@@ -46,6 +49,8 @@ class AddOrEdit extends Component {
                 this.setState({ Instructions: this.props.location.myCustomProps.Instructions })
                 this.setState({ Ingredients: this.props.location.myCustomProps.Ingredients })
                 this.setState({ Image: this.props.location.myCustomProps.Image })
+                this.setState({ ImagePreview: this.props.location.myCustomProps.Image })
+                this.setState({ ImageName: this.props.location.myCustomProps.nameOfImage })
                 this.setState({ ID: this.props.location.myCustomProps.ID })
             }
             
@@ -60,7 +65,7 @@ class AddOrEdit extends Component {
                 this.setState({ RecipeName: data.name })
                 this.setState({ Instructions: data.instruction })
                 this.setState({ Ingredients: data.ingredients })
-                this.setState({ nameOfImage: data.nameOfImage })
+                this.setState({ ImageName: data.nameOfImage })
                 this.setState({ ID: data.recipeId })
 
                 this.setState({ DuringOperation: false })
@@ -97,18 +102,19 @@ class AddOrEdit extends Component {
         let that = this
         let outside
 
-        if (this.state.nameOfImage === null) {
-            this.setState({ Image: '/food template.png' })
+        if (this.state.ImageName === null) {
+            this.setState({ ImagePreview: '/food template.png' })
         }
         else {
 
             this.setState({ DuringOperation: true })
-            let result = RecipesEndPointAPI.DownloadImage(this.state.nameOfImage)
+            let result = RecipesEndPointAPI.DownloadImage(this.state.ImageName)
             result.then(data => {
                 console.log("Pobrano obrazek")
                 console.log(data)
                 outside = URL.createObjectURL(data)
                 this.setState({ Image: outside })
+                this.setState({ ImagePreview: outside })
                 console.log(outside)
                 this.setState({ DuringOperation: false })
             })
@@ -177,7 +183,7 @@ class AddOrEdit extends Component {
 
             reader.onloadend = function (e) {
                 this.setState({
-                    Image: [reader.result]
+                    ImagePreview: [reader.result]
                 })
               }.bind(this);
             console.log(url) // Would see a path?
@@ -197,7 +203,7 @@ class AddOrEdit extends Component {
 
             if(this.state.Edit)
             {
-                let result = RecipesEndPointAPI.PutRecipes(this.state.ID, this.state.ID, this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image)
+                let result = RecipesEndPointAPI.PutRecipes(this.state.ID, this.state.ID, this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image, this.state.ImageName)
                 result.then(data => {
                     console.log("Przepis zaktualizowany")
                     this.setState({ DuringOperation: false })
@@ -256,6 +262,13 @@ class AddOrEdit extends Component {
         event.preventDefault();
     }
 
+    DeleteImage()
+    {
+        this.setState({ ImageName: "" })
+        this.setState({ Image: null })
+        this.setState({ ImagePreview: '/food template.png' })
+        
+    }
 
     CanSubmit() {
         let output = false;
@@ -281,6 +294,8 @@ class AddOrEdit extends Component {
             );
         }
     }
+
+
 
     render() {
 
@@ -353,16 +368,27 @@ class AddOrEdit extends Component {
                             <h3 className="text-center">Obrazek:</h3>
                             </Col>
 
-                            <Col md={8}>
+                            <Col md={6}>
                             <div class="custom-file mb-3">
                                 <input id="formFile" type="file" class="custom-file-input" accept=".png, .jpg, .jpeg, .gif" onChange={this.onChangeFile} />
                                 <label class="custom-file-label" for="inputGroupFile01">Wybierz obrazek</label>
                                 
                             </div>
                             </Col>
+
+                            <Col md={2}>
+                            <div class="custom-file mb-3">
+    
+                            <div class="d-flex justify-content-center">
+                                <Button variant="primary" onClick={this.DeleteImage} size="lg" disabled={!this.state.ImageName}>
+                                   Usuń obrazek
+    </Button>
+                            </div>
+                            </div>
+                            </Col>
                            
                             <Col md={4}>
-                            <img className="smallImg mx-auto d-block mb-3" src={this.state.Image} />
+                            <img className="smallImg mx-auto d-block mb-3" src={this.state.ImagePreview} />
                             </Col>
                             <Col md={12}>
                             <div class="d-flex justify-content-center">
@@ -389,4 +415,4 @@ class AddOrEdit extends Component {
 }}
 
 
-export default AddOrEdit
+export default AddOrEdit 
