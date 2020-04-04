@@ -39,6 +39,7 @@ class AddOrEdit extends Component {
         bsCustomFileInput.init()
         console.log(this.props.match.params.id)
         console.log(this.props.location.myCustomProps)
+        this.setState({ ImagePreview: '/food template.png' })
 
         try {
             if (this.props.match.params.id != 0) {
