@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button, Spinner, Alert } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import { APIHelper } from '../API/APIHelper';
 
@@ -39,28 +39,28 @@ class RegisterForm extends Component {
                 this.setState({ DuringOperation: false })
                 this.ClearForm();
             })
-            .catch(error => {
-                //Connection problem
-                if (error == "TypeError: response.text is not a function") {
-                    console.log('Problem z połączeniem')
-                    this.setState({ InfoMessageIsError: true })
-                    this.setState({ InfoMessage: 'Problem z połączeniem' })
-                    this.setState({ DuringOperation: false })
-                }
-                else {
-                    try {
-                        var obj = JSON.parse(error)
-                        console.log(obj.message)
+                .catch(error => {
+                    //Connection problem
+                    if (error == "TypeError: response.text is not a function") {
+                        console.log('Problem z połączeniem')
                         this.setState({ InfoMessageIsError: true })
-                        this.setState({ InfoMessage: obj.message })
+                        this.setState({ InfoMessage: 'Problem z połączeniem' })
                         this.setState({ DuringOperation: false })
                     }
-                    //Another problem...
-                    catch (error) {
-                        console.log(error);
+                    else {
+                        try {
+                            var obj = JSON.parse(error)
+                            console.log(obj.message)
+                            this.setState({ InfoMessageIsError: true })
+                            this.setState({ InfoMessage: obj.message })
+                            this.setState({ DuringOperation: false })
+                        }
+                        //Another problem...
+                        catch (error) {
+                            console.log(error);
+                        }
                     }
-                }
-            })
+                })
         }
         event.preventDefault();
     }
@@ -103,12 +103,17 @@ class RegisterForm extends Component {
         else {
             if (this.state.InfoMessage != "" && this.state.InfoMessageIsError == false) {
                 return (
-                    <h2 className="display-5 text-center text-success ">{this.state.InfoMessage}</h2>
+
+                    <Alert className="text-center" variant="success">
+                        {this.state.InfoMessage}
+                    </Alert>
                 );
             }
             else if (this.state.InfoMessage != "" && this.state.InfoMessageIsError == true) {
                 return (
-                    <h2 className="display-5 text-center text-danger ">{this.state.InfoMessage}</h2>
+                    <Alert className="text-center" variant="danger">
+                        {this.state.InfoMessage}
+                    </Alert>
                 );
             }
             else {

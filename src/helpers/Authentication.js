@@ -13,53 +13,44 @@ export const Authentication = {
 };
 
 
-function SaveToken(token, remember)
-{
-    if(remember)
-    {
+function SaveToken(token, remember) {
+    if (remember) {
         Cookie.set("JWT", token, { expires: 7 });
     }
-    else{
+    else {
         Cookie.set("JWT", token)
     }
 }
 
-function LoadToken()
-{
+function LoadToken() {
     return Cookie.get("JWT") ? Cookie.get("JWT") : null;
 }
 
-function LogOut()
-{
+function LogOut() {
     Cookie.remove('JWT');
     Cookie.remove('userName');
     Cookie.remove('email');
     Cookie.remove('id');
 }
 
-function isAuthenticated()
-{
+function isAuthenticated() {
     return Cookie.get("JWT") ? true : false;
 }
 
-function SaveUserData(userJson)
-{
+function SaveUserData(userJson) {
     Cookie.set("userName", userJson.userName, { expires: 7 });
     Cookie.set("email", userJson.email, { expires: 7 });
     Cookie.set("id", userJson.id, { expires: 7 });
 }
 
-function LoadUserName()
-{
+function LoadUserName() {
     return Cookie.get("userName") ? Cookie.get("userName") : null;
 }
 
-function LoadUserEmail()
-{
+function LoadUserEmail() {
     return Cookie.get("email") ? Cookie.get("email") : null;
 }
 
-function LoadUserId()
-{
+function LoadUserId() {
     return Cookie.get("id") ? Cookie.get("id") : null;
 }

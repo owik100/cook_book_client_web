@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button, Spinner, Alert } from 'react-bootstrap';
 import { Link, Redirect } from "react-router-dom";
 import { Authentication } from "../helpers/Authentication"
 import { APIHelper } from '../API/APIHelper';
@@ -45,39 +45,39 @@ class LoginForm extends Component {
             Authentication.SaveToken(data.access_Token, this.state.RememberMe)
             this.GetUserData();
         })
-        .catch(error => {
-            //Connection problem
-            if (error == "TypeError: response.text is not a function") {
-                console.log('Problem z połączeniem')
-                this.setState({ InfoMessage: 'Problem z połączeniem' })
-                this.setState({ DuringOperation: false })
-            }
-            else {
-                try {
-                    var obj = JSON.parse(error)
-                    console.log(obj.message)
-                    this.setState({ InfoMessage: obj.message })
+            .catch(error => {
+                //Connection problem
+                if (error == "TypeError: response.text is not a function") {
+                    console.log('Problem z połączeniem')
+                    this.setState({ InfoMessage: 'Problem z połączeniem' })
                     this.setState({ DuringOperation: false })
                 }
-                //Another problem...
-                catch (error) {
-                    console.log(error);
+                else {
+                    try {
+                        var obj = JSON.parse(error)
+                        console.log(obj.message)
+                        this.setState({ InfoMessage: obj.message })
+                        this.setState({ DuringOperation: false })
+                    }
+                    //Another problem...
+                    catch (error) {
+                        console.log(error);
+                    }
                 }
-            }
-        })
+            })
 
         event.preventDefault();
     }
 
     GetUserData() {
-       let result = APIHelper.GetUserData()
-       
-       result.then(data => {
-                console.log("Pobrano dane użytkownika")
-                console.log(data)
-                Authentication.SaveUserData(data);
-                this.setState({ isLogged: true })
-            })
+        let result = APIHelper.GetUserData()
+
+        result.then(data => {
+            console.log("Pobrano dane użytkownika")
+            console.log(data)
+            Authentication.SaveUserData(data);
+            this.setState({ isLogged: true })
+        })
             .catch(error => {
                 //Connection problem
                 if (error == "TypeError: response.text is not a function") {
@@ -113,7 +113,9 @@ class LoginForm extends Component {
         else {
             if (this.state.InfoMessage != "") {
                 return (
-                    <h2 className="display-5 text-center text-danger ">{this.state.InfoMessage}</h2>
+                    <Alert className="text-center" variant="danger">
+                    {this.state.InfoMessage}
+                </Alert>
                 );
             }
             else {

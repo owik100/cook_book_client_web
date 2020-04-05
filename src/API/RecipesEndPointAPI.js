@@ -1,5 +1,5 @@
 import React from 'react';
-import {AuthHeaders} from '../helpers/AuthHeaders'
+import { AuthHeaders } from '../helpers/AuthHeaders'
 
 export const RecipesEndPointAPI = {
     GetAllRecipesLoggedUser,
@@ -12,8 +12,7 @@ export const RecipesEndPointAPI = {
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-function GetRecipeByID(Id)
-{
+function GetRecipeByID(Id) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -24,7 +23,7 @@ function GetRecipeByID(Id)
         },
     };
 
-   return fetch( API_URL + `/api/Recipes/${Id}`, requestOptions)
+    return fetch(API_URL + `/api/Recipes/${Id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -40,8 +39,7 @@ function GetRecipeByID(Id)
 }
 
 
-function GetAllRecipesLoggedUser()
-{
+function GetAllRecipesLoggedUser() {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -52,7 +50,7 @@ function GetAllRecipesLoggedUser()
         },
     };
 
-   return fetch( API_URL + '/api/Recipes/CurrentUserRecipes', requestOptions)
+    return fetch(API_URL + '/api/Recipes/CurrentUserRecipes', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -68,8 +66,7 @@ function GetAllRecipesLoggedUser()
 }
 
 
-function DownloadImage(id)
-{
+function DownloadImage(id) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -80,7 +77,7 @@ function DownloadImage(id)
         },
     };
 
-   return fetch( API_URL + `/api/Recipes/GetPhoto/${id}`, requestOptions)
+    return fetch(API_URL + `/api/Recipes/GetPhoto/${id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -96,8 +93,7 @@ function DownloadImage(id)
 }
 
 
-function DeleteRecipes(id)
-{
+function DeleteRecipes(id) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -108,7 +104,7 @@ function DeleteRecipes(id)
         },
     };
 
-   return fetch( API_URL + `/api/Recipes/${id}`, requestOptions)
+    return fetch(API_URL + `/api/Recipes/${id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -124,17 +120,16 @@ function DeleteRecipes(id)
 }
 
 
-function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image)
-{
+function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image) {
     let Authorization = AuthHeaders.GetBearer()
 
     let Ingredients = IngredientsArr.join(";");
 
     var formdata = new FormData();
-formdata.append("Name", RecipeName);
-formdata.append("Instruction", Instructions);
-formdata.append("Ingredients", Ingredients);
-formdata.append("Image",Image);
+    formdata.append("Name", RecipeName);
+    formdata.append("Instruction", Instructions);
+    formdata.append("Ingredients", Ingredients);
+    formdata.append("Image", Image);
 
     const requestOptions = {
         method: 'POST',
@@ -144,7 +139,7 @@ formdata.append("Image",Image);
         body: formdata,
     };
 
-   return fetch( API_URL + '/api/Recipes/', requestOptions)
+    return fetch(API_URL + '/api/Recipes/', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -159,19 +154,18 @@ formdata.append("Image",Image);
         })
 }
 
-function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image, NameOfImage)
-{
+function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image, NameOfImage) {
     let Authorization = AuthHeaders.GetBearer()
 
     let Ingredients = IngredientsArr.join(";");
 
     var formdata = new FormData();
-formdata.append("Name", RecipeName);
-formdata.append("Instruction", Instructions);
-formdata.append("Ingredients", Ingredients);
-formdata.append("Image",Image);
-formdata.append("NameOfImage",NameOfImage);
-formdata.append("RecipeId",RecipeId);
+    formdata.append("Name", RecipeName);
+    formdata.append("Instruction", Instructions);
+    formdata.append("Ingredients", Ingredients);
+    formdata.append("Image", Image);
+    formdata.append("NameOfImage", NameOfImage);
+    formdata.append("RecipeId", RecipeId);
 
     const requestOptions = {
         method: 'PUT',
@@ -181,7 +175,7 @@ formdata.append("RecipeId",RecipeId);
         body: formdata,
     };
 
-   return fetch( API_URL + `/api/Recipes/${id}`, requestOptions)
+    return fetch(API_URL + `/api/Recipes/${id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {

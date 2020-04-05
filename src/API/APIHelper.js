@@ -1,5 +1,5 @@
 import React from 'react';
-import {AuthHeaders} from '../helpers/AuthHeaders'
+import { AuthHeaders } from '../helpers/AuthHeaders'
 
 export const APIHelper = {
     Register,
@@ -64,7 +64,7 @@ function LogIn(username, password) {
 
 function GetUserData() {
 
-   let Authorization = AuthHeaders.GetBearer()
+    let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
         method: 'GET',
@@ -74,7 +74,7 @@ function GetUserData() {
         },
     };
 
-   return fetch( API_URL + '/api/User', requestOptions)
+    return fetch(API_URL + '/api/User', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {

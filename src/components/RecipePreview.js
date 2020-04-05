@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
-import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns, Button, Modal } from 'react-bootstrap';
+import { Spinner, Container, Row, Col, Alert, Button, Modal } from 'react-bootstrap';
 import { Link, Redirect } from "react-router-dom";
 export * from 'react-router';
 
@@ -19,6 +19,7 @@ class RecipePreview extends Component {
             showModal: false,
             RecipeDeleted: false,
             DuringOperation: false,
+            InfoMessage: "",
         }
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleModalShow = this.handleModalShow.bind(this);
@@ -59,12 +60,14 @@ class RecipePreview extends Component {
                     //Connection problem
                     if (error == "TypeError: response.text is not a function") {
                         console.log('Problem z połączeniem')
+                        this.setState({ InfoMessage: "Problem z połączeniem"})
                         this.setState({ DuringOperation: false })
                     }
                     else {
                         try {
                             var obj = JSON.parse(error)
                             console.log(obj.message)
+                            this.setState({ InfoMessage: obj.message})
                             this.setState({ DuringOperation: false })
                         }
                         //Another problem...
@@ -201,9 +204,15 @@ class RecipePreview extends Component {
                     </Spinner>
                 </div>
             )
+        } else if(this.state.InfoMessage != "")
+        {
+            return (
+            <Alert className="text-center"  variant="danger">
+            {this.state.InfoMessage}
+          </Alert>
+          )
         }
         else {
-
             return (
 
                 <div>

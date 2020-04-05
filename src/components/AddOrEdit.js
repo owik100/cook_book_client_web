@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
-import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns, Button, Modal, Form, ListGroup } from 'react-bootstrap';
+import { Spinner, Container, Row, Col,  Button, Alert, Form, ListGroup } from 'react-bootstrap';
 import { Link, Redirect } from "react-router-dom";
 import bsCustomFileInput from 'bs-custom-file-input'
 
@@ -10,7 +10,7 @@ class AddOrEdit extends Component {
         super(props)
 
         this.state = {
-            Edit : false,
+            Edit: false,
             InfoMessage: "",
             DuringOperation: false,
             CanSubmit: false,
@@ -44,9 +44,9 @@ class AddOrEdit extends Component {
         try {
             if (this.props.match.params.id != 0) {
                 this.setState({ Edit: true })
-        
-                   //Jezeli edytujemy, wez dane z prospow
-                this.setState({ RecipeName: this.props.location.myCustomProps.Name})
+
+                //Jezeli edytujemy, wez dane z prospow
+                this.setState({ RecipeName: this.props.location.myCustomProps.Name })
                 this.setState({ Instructions: this.props.location.myCustomProps.Instructions })
                 this.setState({ Ingredients: this.props.location.myCustomProps.Ingredients })
                 this.setState({ Image: this.props.location.myCustomProps.Image })
@@ -54,8 +54,8 @@ class AddOrEdit extends Component {
                 this.setState({ ImageName: this.props.location.myCustomProps.nameOfImage })
                 this.setState({ ID: this.props.location.myCustomProps.ID })
             }
-            
-         //Jak nie da rady pobierz z API
+
+            //Jak nie da rady pobierz z API
         } catch (error) {
             this.setState({ DuringOperation: true })
 
@@ -76,12 +76,14 @@ class AddOrEdit extends Component {
                     //Connection problem
                     if (error == "TypeError: response.text is not a function") {
                         console.log('Problem z połączeniem')
+                        this.setState({ InfoMessage: 'Problem z połączeniem'})
                         this.setState({ DuringOperation: false })
                     }
                     else {
                         try {
                             var obj = JSON.parse(error)
                             console.log(obj.message)
+                            this.setState({ InfoMessage: obj.message })
                             this.setState({ DuringOperation: false })
                         }
                         //Another problem...
@@ -92,11 +94,7 @@ class AddOrEdit extends Component {
                     }
                 })
         }
-
-        
-
     }
-
 
 
     DonwloadRecipeImage() {
@@ -186,12 +184,7 @@ class AddOrEdit extends Component {
                 this.setState({
                     ImagePreview: [reader.result]
                 })
-              }.bind(this);
-            console.log(url) // Would see a path?
-            // TODO: concat files
-          
-
-
+            }.bind(this);
         }
         else {
             this.setState({ InfoMessage: "Wybierz poprawny format pliku!" })
@@ -201,9 +194,9 @@ class AddOrEdit extends Component {
     handleSubmit(event) {
         if (this.CanSubmit()) {
             this.setState({ DuringOperation: true })
+            this.setState({ InfoMessage: ""})
 
-            if(this.state.Edit)
-            {
+            if (this.state.Edit) {
                 let result = RecipesEndPointAPI.PutRecipes(this.state.ID, this.state.ID, this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image, this.state.ImageName)
                 result.then(data => {
                     console.log("Przepis zaktualizowany")
@@ -214,6 +207,7 @@ class AddOrEdit extends Component {
                         //Connection problem
                         if (error == "TypeError: response.text is not a function") {
                             console.log('Problem z połączeniem')
+                            this.setState({ InfoMessage: 'Problem z połączeniem'})
                             this.setState({ DuringOperation: false })
                         }
                         else {
@@ -230,45 +224,44 @@ class AddOrEdit extends Component {
                         }
                     })
             }
-            else{
+            else {
                 let result = RecipesEndPointAPI.InsertRecipe(this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image)
-            result.then(data => {
-                console.log("Przepis dodany")
-                this.setState({ DuringOperation: false })
-                this.setState({ OperationComplete: true })
-            })
-                .catch(error => {
-                    //Connection problem
-                    if (error == "TypeError: response.text is not a function") {
-                        console.log('Problem z połączeniem')
-                        this.setState({ DuringOperation: false })
-                    }
-                    else {
-                        try {
-                            var obj = JSON.parse(error)
-                            console.log(obj.message)
-                            this.setState({ InfoMessage: obj.message })
+                result.then(data => {
+                    console.log("Przepis dodany")
+                    this.setState({ DuringOperation: false })
+                    this.setState({ OperationComplete: true })
+                })
+                    .catch(error => {
+                        //Connection problem
+                        if (error == "TypeError: response.text is not a function") {
+                            console.log('Problem z połączeniem')
+                            this.setState({ InfoMessage: 'Problem z połączeniem'})
                             this.setState({ DuringOperation: false })
                         }
-                        //Another problem...
-                        catch (error) {
-                            console.log(error);
+                        else {
+                            try {
+                                var obj = JSON.parse(error)
+                                console.log(obj.message)
+                                this.setState({ InfoMessage: obj.message })
+                                this.setState({ DuringOperation: false })
+                            }
+                            //Another problem...
+                            catch (error) {
+                                console.log(error);
+                            }
                         }
-                    }
-                })
+                    })
             }
 
-            
         }
         event.preventDefault();
     }
 
-    DeleteImage()
-    {
+    DeleteImage() {
         this.setState({ ImageName: "" })
         this.setState({ Image: null })
         this.setState({ ImagePreview: '/food template.png' })
-        
+
     }
 
     CanSubmit() {
@@ -291,15 +284,14 @@ class AddOrEdit extends Component {
         }
         else if (this.state.InfoMessage != "") {
             return (
-                <h2 className="display-5 text-center text-alert ">{this.state.InfoMessage}</h2>
-            );
+                <Alert className="text-center"  variant="danger">
+                {this.state.InfoMessage}
+              </Alert>
+              )
         }
     }
 
-
-
     render() {
-
 
         if (this.state.OperationComplete === true) {
             return <Redirect to='/Recipes' />
@@ -323,97 +315,94 @@ class AddOrEdit extends Component {
         }
         else {
 
-        return (
+            return (
 
-            <Form id="registerForm" onSubmit={this.handleSubmit}>
+                <Form id="registerForm" onSubmit={this.handleSubmit}>
 
-                <Container>
-                    <Row>
-                        <Col md={12}>
-                            {this.SubmitMessage()}
+                    <Container>
+                        <Row>
+                            <Col md={12}>
+                                {this.SubmitMessage()}
 
-                            <Form.Group controlId="formName">
-                                {/* <Form.Label   className="text-center" style={{width: "100%"}}>Nazwa przepisu:</Form.Label> */}
-                                <h3 className="text-center mt-3">Nazwa przepisu:</h3>
-                                <Form.Control type="text" size="lg" name="RecipeName" required onChange={this.handleChange} value={this.state.RecipeName} />
-                            </Form.Group>
-                        </Col>
+                                <Form.Group controlId="formName">
+                                    {/* <Form.Label   className="text-center" style={{width: "100%"}}>Nazwa przepisu:</Form.Label> */}
+                                    <h3 className="text-center mt-3">Nazwa przepisu:</h3>
+                                    <Form.Control type="text" size="lg" name="RecipeName" required onChange={this.handleChange} value={this.state.RecipeName} />
+                                </Form.Group>
+                            </Col>
 
 
-                        <Col md={8}>
+                            <Col md={8}>
 
-                            <Form.Group controlId="formInstructions">
-                                {/* <Form.Label className="text-center" style={{width: "100%"}} >Przepis:</Form.Label> */}
-                                <h3 className="text-center">Przepis:</h3>
-                                <Form.Control as="textarea" style={{ height: "400px" }} size="lg" type="text" name="Instructions" required onChange={this.handleChange} value={this.state.Instructions} />
-                            </Form.Group>
-                        </Col>
+                                <Form.Group controlId="formInstructions">
+                                    {/* <Form.Label className="text-center" style={{width: "100%"}} >Przepis:</Form.Label> */}
+                                    <h3 className="text-center">Przepis:</h3>
+                                    <Form.Control as="textarea" style={{ height: "400px" }} size="lg" type="text" name="Instructions" required onChange={this.handleChange} value={this.state.Instructions} />
+                                </Form.Group>
+                            </Col>
 
-                        <Col md={4}>
-                            <Form.Group controlId="formIngredients">
-                                {/* <Form.Label>Składniki</Form.Label> */}
-                                <h3 className="text-center">Składniki:</h3>
-                                <Form.Control type="text" name="IngredientsInput" onChange={this.handleChange} value={this.state.IngredientsInput} />
-                            </Form.Group>
+                            <Col md={4}>
+                                <Form.Group controlId="formIngredients">
+                                    {/* <Form.Label>Składniki</Form.Label> */}
+                                    <h3 className="text-center">Składniki:</h3>
+                                    <Form.Control type="text" name="IngredientsInput" onChange={this.handleChange} value={this.state.IngredientsInput} />
+                                </Form.Group>
 
-                            <div class="d-flex justify-content-center mb-3">
-                                <Button disabled={!this.state.IngredientsInput} onClick={this.handleIngredientAdd} className="mr-3">Dodaj</Button>
-                                <Button disabled={!this.state.SelectedIngredient} onClick={this.handleIngredientRemove}>Usuń</Button>
-                            </div>
-                            <ListGroup id="IngredientsGroup" as="ul">
-                                {ingredients}
-                            </ListGroup>
-                        </Col>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <Button disabled={!this.state.IngredientsInput} onClick={this.handleIngredientAdd} className="mr-3">Dodaj</Button>
+                                    <Button disabled={!this.state.SelectedIngredient} onClick={this.handleIngredientRemove}>Usuń</Button>
+                                </div>
+                                <ListGroup id="IngredientsGroup" as="ul">
+                                    {ingredients}
+                                </ListGroup>
+                            </Col>
 
-                        <Col md={12}>
-                            <h3 className="text-center">Obrazek:</h3>
+                            <Col md={12}>
+                                <h3 className="text-center">Obrazek:</h3>
                             </Col>
 
                             <Col md={6}>
-                            <div class="custom-file mb-3">
-                                <input id="formFile" type="file" class="custom-file-input" accept=".png, .jpg, .jpeg, .gif" onChange={this.onChangeFile} />
-                                <label class="custom-file-label" for="inputGroupFile01">Wybierz obrazek</label>
-                                
-                            </div>
+                                <div class="custom-file mb-3">
+                                    <input id="formFile" type="file" class="custom-file-input" accept=".png, .jpg, .jpeg, .gif" onChange={this.onChangeFile} />
+                                    <label class="custom-file-label" for="inputGroupFile01">Wybierz obrazek</label>
+
+                                </div>
                             </Col>
 
                             <Col md={2}>
-                            <div class="custom-file mb-3">
-    
-                            <div class="d-flex justify-content-center">
-                                <Button variant="primary" onClick={this.DeleteImage} size="lg" disabled={!this.state.ImageName}>
-                                   Usuń obrazek
-    </Button>
-                            </div>
-                            </div>
+                                <div class="custom-file mb-3">
+
+                                    <div class="d-flex justify-content-center">
+                                        <Button variant="primary" onClick={this.DeleteImage} size="lg" disabled={!this.state.ImageName}>
+                                            Usuń obrazek
+                                        </Button>
+                                    </div>
+                                </div>
                             </Col>
-                           
+
                             <Col md={4}>
-                            <img className="smallImg mx-auto d-block mb-3" src={this.state.ImagePreview} />
+                                <img className="smallImg mx-auto d-block mb-3" src={this.state.ImagePreview} />
                             </Col>
                             <Col md={12}>
-                            <div class="d-flex justify-content-center">
-                                <Button variant="primary" type="submit" size="lg" disabled={!this.CanSubmit()}>
-                                    {this.state.Edit ? "Zaaktualizuj przepis" : "Dodaj przepis"}
-    </Button>
-                            </div>
+                                <div class="d-flex justify-content-center">
+                                    <Button variant="primary" type="submit" size="lg" disabled={!this.CanSubmit()}>
+                                        {this.state.Edit ? "Zaaktualizuj przepis" : "Dodaj przepis"}
+                                    </Button>
+                                </div>
 
-                            <div class="d-flex justify-content-center mb-3">
-                                <Button variant="outline-primary" as={Link} to="/Login" className="mt-3"  >
-                                    Wróć
-             </Button>
-                            </div>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <Button variant="outline-primary" as={Link} to="/Login" className="mt-3"  >
+                                        Wróć
+                                </Button>
+                                </div>
                             </Col>
-
-                            
-
-                    </Row>
-                </Container>
-            </Form>
-
-        )
+                        </Row>
+                    </Container>
+                </Form>
+            )
+        }
     }
-}}
+}
 
 
 export default AddOrEdit 

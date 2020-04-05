@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
-import { Spinner, Container, Row, Col, CardGroup, Card, CardDeck, CardColumns } from 'react-bootstrap';
-import { Link} from "react-router-dom";
+import { Spinner, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 
 class Recipes extends Component {
 
@@ -9,9 +9,9 @@ class Recipes extends Component {
         super()
         this.state = {
             DuringOperation: false,
+            InfoMessage: "",
             Recipes: []
         }
-        //this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
@@ -28,6 +28,7 @@ class Recipes extends Component {
             .catch(error => {
                 //Connection problem
                 if (error == "TypeError: response.text is not a function") {
+                    this.setState({ InfoMessage: "Problem z połączeniem"})
                     console.log('Problem z połączeniem')
                     this.setState({ DuringOperation: false })
                 }
@@ -35,6 +36,7 @@ class Recipes extends Component {
                     try {
                         var obj = JSON.parse(error)
                         console.log(obj.message)
+                        this.setState({ InfoMessage: obj.message})
                         this.setState({ DuringOperation: false })
                     }
                     //Another problem...
@@ -104,37 +106,43 @@ class Recipes extends Component {
                     </Spinner>
                 </div>
             )
+        } else if(this.state.InfoMessage != "")
+        {
+            return (
+            <Alert className="text-center"  variant="danger">
+            {this.state.InfoMessage}
+          </Alert>
+          )
         }
         else {
 
-const recipes = this.state.Recipes.map(item =>
-    
-    <Col sm={4} md={3} lg={2} xl={2}   as={Link} to={
-        { 
-            pathname: `/RecipePreview/${item.recipeId}`,
-            myCustomProps: item
-        }} className="SingleRecipe" key={item.recipeId}>
+            const recipes = this.state.Recipes.map(item =>
+
+                <Col sm={4} md={3} lg={2} xl={2} as={Link} to={
+                    {
+                        pathname: `/RecipePreview/${item.recipeId}`,
+                        myCustomProps: item
+                    }} className="SingleRecipe" key={item.recipeId}>
 
 
-            <div className="mt-3 singleRecipe" >
-            <div class="d-flex justify-content-center">
-            <img  src={item.image} /> 
-            </div>
-            <p className="text-center"> {item.name}</p>
-            </div>
-    </Col>)
+                    <div className="mt-3 singleRecipe" >
+                        <div class="d-flex justify-content-center">
+                            <img src={item.image} />
+                        </div>
+                        <p className="text-center"> {item.name}</p>
+                    </div>
+                </Col>)
             return (
-               <Container fluid>
-                   <Row>
-                   {recipes}
-                   </Row>
-               </Container>
+                <Container fluid>
+                    <Row>
+                        {recipes}
+                    </Row>
+                </Container>
 
             )
         }
 
     }
-
 
 }
 
