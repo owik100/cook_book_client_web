@@ -72,6 +72,8 @@ else{
                 this.setState({ isPublic: data.isPublic })
                 this.setState({ userName: data.userName })
 
+                this.setState({ LastVisit: "/UserRecipes"})
+
                 this.setState({ DuringOperation: false })
                 this.DonwloadRecipeImage();
             })
