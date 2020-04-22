@@ -23,6 +23,7 @@ class RecipePreview extends Component {
             RecipeDeleted: false,
             DuringOperation: false,
             InfoMessage: "",
+            LastVisit : ""
         }
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleModalShow = this.handleModalShow.bind(this);
@@ -43,6 +44,17 @@ class RecipePreview extends Component {
             this.setState({ nameOfImage: this.props.location.myCustomProps.item.nameOfImage })
             this.setState({ isPublic: this.props.location.myCustomProps.item.isPublic })
             this.setState({ userName: this.props.location.myCustomProps.item.userName })
+
+if(this.props.location.myCustomProps2 === "User")
+{
+    this.setState({ LastVisit: "/UserRecipes"})
+}
+else{
+    this.setState({ LastVisit: "/PublicRecipes"})
+}
+
+
+            
 
 
         } catch (error) {
@@ -267,7 +279,7 @@ class RecipePreview extends Component {
                             </Col>
 
                             <Col  >
-                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to="/Recipes" >Powrót</Button>
+                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={this.state.LastVisit} >Powrót</Button>
                             </Col>
 
                             <Col  >

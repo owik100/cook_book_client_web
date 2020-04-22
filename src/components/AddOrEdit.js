@@ -227,6 +227,7 @@ class AddOrEdit extends Component {
                             //Another problem...
                             catch (error) {
                                 console.log(error);
+                                this.setState({ DuringOperation: false })
                             }
                         }
                     })
@@ -402,7 +403,7 @@ class AddOrEdit extends Component {
                                 </div>
 
                                 <div class="d-flex justify-content-center mb-3">
-                                    <Button variant="outline-primary" as={Link} to="/Login" className="mt-3"  >
+                                    <Button variant="outline-primary" as={Link} to="/UserRecipes" className="mt-3"  >
                                         Wróć
                                 </Button>
                                 </div>

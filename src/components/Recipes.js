@@ -207,7 +207,8 @@ class Recipes extends Component {
                 <Col sm={4} md={3} lg={2} xl={2} as={Link} to={
                     {
                         pathname: `/RecipePreview/${item.recipeId}`,
-                        myCustomProps: item
+                        myCustomProps: item,
+                        myCustomProps2: this.state.UserOrPublic
                     }} className={item.DisplayAsPublic ? 'PublicRecipe' : null} key={item.recipeId}>
 
 
