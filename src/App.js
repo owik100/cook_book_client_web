@@ -37,9 +37,15 @@ function App() {
           <Route path="/Register">
             <RegisterForm />
           </Route>
-          <PrivateRoute path="/Recipes">
+
+          <PrivateRoute path="/UserRecipes">
             <Recipes />
           </PrivateRoute>
+
+          <PrivateRoute path="/PublicRecipes">
+            <Recipes />
+          </PrivateRoute>
+
           <Route path="/RecipePreview/:id" render={(props) => <RecipePreview {...props}/>}/>
 
           <Route path="/Edit/:id" render={(props) => <AddOrEdit {...props}/>}/>

@@ -7,7 +7,8 @@ export const RecipesEndPointAPI = {
     DeleteRecipes,
     InsertRecipe,
     GetRecipeByID,
-    PutRecipes
+    PutRecipes,
+    GetPublicRecipes
 };
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -51,6 +52,33 @@ function GetAllRecipesLoggedUser() {
     };
 
     return fetch(API_URL + '/api/Recipes/CurrentUserRecipes', requestOptions)
+        .then(response => {
+            // reject not ok response
+            if (!response.ok) {
+                return Promise.reject(response)
+            }
+            return response.json()
+        })
+        // catch error response and extract the error message
+        .catch(async response => {
+            const error = await response.text().then(text => text)
+            return Promise.reject(error)
+        })
+}
+
+
+function GetPublicRecipes() {
+    let Authorization = AuthHeaders.GetBearer()
+
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization,
+        },
+    };
+
+    return fetch(API_URL + '/api/Recipes/GetPublicRecipes', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {

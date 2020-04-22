@@ -43,7 +43,8 @@ function NavIfLogged() {
         return (
             <Nav className="mr-auto">
                 <Nav.Link as={Link} to="/Edit/0" >Dodaj przepis</Nav.Link>
-                <Nav.Link as={Link} to="/Recipes" >Moje przepisy</Nav.Link>
+                <Nav.Link as={Link} to="/UserRecipes" >Moje przepisy</Nav.Link>
+                <Nav.Link as={Link} to="/PublicRecipes" >Odkrywaj przepisy</Nav.Link>
             </Nav>
         )
     }
@@ -56,7 +57,7 @@ function Header() {
     return (
         <header>
             <Navbar variant="dark" bg="primary" sticky="top" expand="lg">
-                <Navbar.Brand as={Link} to="/Recipes">Cook Book</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/UserRecipes">Cook Book</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     {NavIfLogged()}

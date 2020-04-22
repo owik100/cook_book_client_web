@@ -130,7 +130,7 @@ class LoginForm extends Component {
 
     render() {
         if (this.state.isLogged === true) {
-            return <Redirect to='/Recipes' />
+            return <Redirect to='/UserRecipes' />
         }
 
         return (
