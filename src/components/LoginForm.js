@@ -18,6 +18,7 @@ class LoginForm extends Component {
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     }
 
     componentDidMount() {
@@ -32,6 +33,9 @@ class LoginForm extends Component {
             [name]: value
         })
     }
+
+    handleCheckboxChange = event =>
+    this.setState({ RememberMe: event.target.checked })
 
     handleSubmit(event) {
         this.setState({ DuringOperation: true })
@@ -149,7 +153,7 @@ class LoginForm extends Component {
                             </Form.Group>
 
                             <Form.Group controlId="formRemember">
-                                <Form.Check type="checkbox" label="Zapamiętaj" name="RememberMe" onChange={this.handleChange} value={this.state.RememberMe} />
+                                <Form.Check type="checkbox" label="Zapamiętaj" name="RememberMe" onChange={this.handleCheckboxChange} checked={this.state.RememberMe} />
                             </Form.Group>
 
                             <div class="d-flex justify-content-center">

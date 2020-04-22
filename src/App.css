@@ -50,11 +50,16 @@
   max-height: 100px;
 }
 
-/* .singleRecipe{
-  border: dotted;
-} */
+.PublicRecipe{
+  border: solid  green;
+  border-radius: 25px;
+}
 
 .singleRecipe img{
   height:100px;
 width:175;
+}
+
+.CheckBoxIsRecipePublic label{
+color: green
 }

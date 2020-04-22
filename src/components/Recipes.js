@@ -118,11 +118,11 @@ class Recipes extends Component {
 
             const recipes = this.state.Recipes.map(item =>
 
-                <Col sm={4} md={3} lg={2} xl={2} as={Link} to={
+                <Col  sm={4} md={3} lg={2} xl={2} as={Link} to={
                     {
                         pathname: `/RecipePreview/${item.recipeId}`,
                         myCustomProps: item
-                    }} className="SingleRecipe" key={item.recipeId}>
+                    }} className={ item.isPublic ? 'PublicRecipe' : null} key={item.recipeId}>
 
 
                     <div className="mt-3 singleRecipe" >

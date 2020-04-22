@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
 import { Spinner, Container, Row, Col, Alert, Button, Modal } from 'react-bootstrap';
+import { Authentication } from "../helpers/Authentication"
 import { Link, Redirect } from "react-router-dom";
 export * from 'react-router';
 
@@ -16,6 +17,8 @@ class RecipePreview extends Component {
             Image: "",
             nameOfImage: "",
             ID: "",
+            isPublic: false,
+            userName: "",
             showModal: false,
             RecipeDeleted: false,
             DuringOperation: false,
@@ -38,6 +41,8 @@ class RecipePreview extends Component {
             this.setState({ Image: this.props.location.myCustomProps.item.image })
             this.setState({ ID: this.props.location.myCustomProps.item.recipeId })
             this.setState({ nameOfImage: this.props.location.myCustomProps.item.nameOfImage })
+            this.setState({ isPublic: this.props.location.myCustomProps.item.isPublic })
+            this.setState({ userName: this.props.location.myCustomProps.item.userName })
 
 
         } catch (error) {
@@ -52,6 +57,8 @@ class RecipePreview extends Component {
                 this.setState({ Ingredients: data.ingredients })
                 this.setState({ nameOfImage: data.nameOfImage })
                 this.setState({ ID: data.recipeId })
+                this.setState({ isPublic: data.isPublic })
+                this.setState({ userName: data.userName })
 
                 this.setState({ DuringOperation: false })
                 this.DonwloadRecipeImage();
@@ -190,6 +197,29 @@ class RecipePreview extends Component {
             return <Redirect to='/Recipes' />
         }
 
+        let editButton;
+        let deleteButton;
+        let authorInfo;
+
+        if (!this.state.isPublic || this.state.userName === Authentication.LoadUserName()) 
+        {      editButton =  <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={
+            {
+                pathname: `/Edit/${this.state.ID}`,
+                myCustomProps: this.state
+            }}  >Edytuj</Button> 
+        
+            deleteButton =  <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>
+        
+            authorInfo = null;
+        } 
+
+        else 
+        {   editButton = null
+            deleteButton = null
+
+        authorInfo = <p>Autor: {this.state.userName}</p>
+         }
+
         const ingredients = this.state.Ingredients.map(item =>
             <li>
                 {item}
@@ -241,14 +271,11 @@ class RecipePreview extends Component {
                             </Col>
 
                             <Col  >
-                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={
-                                    {
-                                        pathname: `/Edit/${this.state.ID}`,
-                                        myCustomProps: this.state
-                                    }}  >Edytuj</Button>
+                               {editButton}
+                               {authorInfo}
                             </Col>
                             <Col  >
-                                <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>
+                               {deleteButton}
                             </Col>
 
                         </Row>

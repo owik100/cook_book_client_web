@@ -19,8 +19,9 @@ class AddOrEdit extends Component {
             Ingredients: [],
             IngredientsInput: "",
             SelectedIngredient: "",
+            isPublic: false,
             Image: null,
-            ImagePreview: null,
+          ImagePreview: null,
             ImageName: "",
             ID: "",
             OperationComplete: false
@@ -33,6 +34,7 @@ class AddOrEdit extends Component {
         this.handleRecipeClick = this.handleRecipeClick.bind(this);
         this.handleIngredientRemove = this.handleIngredientRemove.bind(this);
         this.DeleteImage = this.DeleteImage.bind(this);
+        this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     }
 
     componentDidMount() {
@@ -53,6 +55,7 @@ class AddOrEdit extends Component {
                 this.setState({ ImagePreview: this.props.location.myCustomProps.Image })
                 this.setState({ ImageName: this.props.location.myCustomProps.nameOfImage })
                 this.setState({ ID: this.props.location.myCustomProps.ID })
+                this.setState({ isPublic: this.props.location.myCustomProps.isPublic })
             }
 
             //Jak nie da rady pobierz z API
@@ -68,6 +71,7 @@ class AddOrEdit extends Component {
                 this.setState({ Ingredients: data.ingredients })
                 this.setState({ ImageName: data.nameOfImage })
                 this.setState({ ID: data.recipeId })
+                this.setState({ isPublic: data.isPublic })
 
                 this.setState({ DuringOperation: false })
                 this.DonwloadRecipeImage();
@@ -147,6 +151,9 @@ class AddOrEdit extends Component {
         })
     }
 
+    handleCheckboxChange = event =>
+    this.setState({ isPublic: event.target.checked })
+
     handleIngredientAdd(e) {
         const { IngredientsInput, Ingredients } = this.state;
 
@@ -197,7 +204,7 @@ class AddOrEdit extends Component {
             this.setState({ InfoMessage: ""})
 
             if (this.state.Edit) {
-                let result = RecipesEndPointAPI.PutRecipes(this.state.ID, this.state.ID, this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image, this.state.ImageName)
+                let result = RecipesEndPointAPI.PutRecipes(this.state.ID, this.state.ID, this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image, this.state.ImageName, this.state.isPublic)
                 result.then(data => {
                     console.log("Przepis zaktualizowany")
                     this.setState({ DuringOperation: false })
@@ -225,7 +232,7 @@ class AddOrEdit extends Component {
                     })
             }
             else {
-                let result = RecipesEndPointAPI.InsertRecipe(this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image)
+                let result = RecipesEndPointAPI.InsertRecipe(this.state.RecipeName, this.state.Instructions, this.state.Ingredients, this.state.Image, this.state.isPublic)
                 result.then(data => {
                     console.log("Przepis dodany")
                     this.setState({ DuringOperation: false })
@@ -338,6 +345,10 @@ class AddOrEdit extends Component {
                                     {/* <Form.Label className="text-center" style={{width: "100%"}} >Przepis:</Form.Label> */}
                                     <h3 className="text-center">Przepis:</h3>
                                     <Form.Control as="textarea" style={{ height: "400px" }} size="lg" type="text" name="Instructions" required onChange={this.handleChange} value={this.state.Instructions} />
+                                </Form.Group>
+
+                                <Form.Group controlId="formIsPublic">
+                                <Form.Check type="checkbox" label="Przepis publiczny" className="CheckBoxIsRecipePublic" name="isPublic" onChange={this.handleCheckboxChange} checked={this.state.isPublic} />
                                 </Form.Group>
                             </Col>
 

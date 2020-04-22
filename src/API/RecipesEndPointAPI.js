@@ -120,7 +120,7 @@ function DeleteRecipes(id) {
 }
 
 
-function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image) {
+function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image, isPublic) {
     let Authorization = AuthHeaders.GetBearer()
 
     let Ingredients = IngredientsArr.join(";");
@@ -130,6 +130,7 @@ function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image) {
     formdata.append("Instruction", Instructions);
     formdata.append("Ingredients", Ingredients);
     formdata.append("Image", Image);
+    formdata.append("isPublic", isPublic);
 
     const requestOptions = {
         method: 'POST',
@@ -154,7 +155,7 @@ function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image) {
         })
 }
 
-function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image, NameOfImage) {
+function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image, NameOfImage, isPublic) {
     let Authorization = AuthHeaders.GetBearer()
 
     let Ingredients = IngredientsArr.join(";");
@@ -166,6 +167,7 @@ function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Imag
     formdata.append("Image", Image);
     formdata.append("NameOfImage", NameOfImage);
     formdata.append("RecipeId", RecipeId);
+    formdata.append("isPublic", isPublic);
 
     const requestOptions = {
         method: 'PUT',
