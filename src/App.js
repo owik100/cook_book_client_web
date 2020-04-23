@@ -4,7 +4,7 @@ import Header from '../src/components/Header';
 import LoginForm from '../src/components/LoginForm';
 import Main from '../src/Main';
 import Recipes from '../src/components/Recipes'
-import {Authentication} from '../src/helpers/Authentication'
+import { Authentication } from '../src/helpers/Authentication'
 import RecipePreview from '../src/components/RecipePreview'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -29,55 +29,62 @@ function App() {
   return (
     <div>
       <Router>
-            <Header />
+        <Header />
         <Switch>
-        <Route path="/Login">
-            <LoginForm />
-          </Route>
-          <Route path="/Register">
-            <RegisterForm />
-          </Route>
 
-          <PrivateRoute path="/UserRecipes">
-            <Recipes />
-          </PrivateRoute>
+          <Route path="/Login" component={LoginForm} />
 
-          <PrivateRoute path="/PublicRecipes">
-            <Recipes />
-          </PrivateRoute>
+          <Route path="/Register" component={RegisterForm} />
 
-          <Route path="/RecipePreview/:id" render={(props) => <RecipePreview {...props}/>}/>
 
-          <Route path="/Edit/:id" render={(props) => <AddOrEdit {...props}/>}/>
+          <PrivateRoute path="/UserRecipes" component={Recipes} />
 
-          <PrivateRoute path="/">
-          <Recipes />
-          </PrivateRoute>
+          <PrivateRoute path="/PublicRecipes" component={Recipes} />
+
+
+          <PrivateRoute path="/RecipePreview/:id" component={RecipePreview} />
+
+          <PrivateRoute path="/Edit/:id" component={AddOrEdit} />}/>
+
+          <PrivateRoute path="/" component={Recipes} />
+
         </Switch>
       </Router>
     </div>
   );
 }
 
-function PrivateRoute({ children, ...rest }) {
-  return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-      Authentication.isAuthenticated() ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/Login",
-              state: { from: location }
-            }}
-          />
-        )
-      }
-    />
-  );
-}
+
+const PrivateRoute = ({ component: Component, exact, strict, path, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    Authentication.isAuthenticated()
+      ? <Component {...props} />
+      : <Redirect to={{
+        pathname: '/Login',
+        state: { from: props.location }
+      }} />
+  )} />
+)
+
+// function PrivateRoute({ children, ...rest }) {
+//   return (
+//     <Route
+//       {...rest}
+//       render={({ location }) =>
+//       Authentication.isAuthenticated() ? (
+//           children
+//         ) : (
+//           <Redirect
+//             to={{
+//               pathname: "/Login",
+//               state: { from: location }
+//             }}
+//           />
+//         )
+//       }
+//     />
+//   );
+// }
 
 
 export default App;

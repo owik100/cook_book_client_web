@@ -231,7 +231,7 @@ else{
         {   editButton = null
             deleteButton = null
 
-        authorInfo = <p>Autor: {this.state.userName}</p>
+        authorInfo = <p  className="text-center">Autor przepisu: {this.state.userName}</p>
          }
 
         const ingredients = this.state.Ingredients.map(item =>
@@ -284,7 +284,7 @@ else{
                                 <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={this.state.LastVisit} >Powrót</Button>
                             </Col>
 
-                            <Col  >
+                            <Col className="align-self-center" >
                                {editButton}
                                {authorInfo}
                             </Col>
