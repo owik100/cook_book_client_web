@@ -40,7 +40,7 @@ function GetRecipeByID(Id) {
 }
 
 
-function GetAllRecipesLoggedUser() {
+function GetAllRecipesLoggedUser(PageSize, PageNumber) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -51,7 +51,7 @@ function GetAllRecipesLoggedUser() {
         },
     };
 
-    return fetch(API_URL + '/api/Recipes/CurrentUserRecipes', requestOptions)
+    return fetch(API_URL + `/api/Recipes/CurrentUserRecipes/${PageSize}/${PageNumber}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -67,7 +67,7 @@ function GetAllRecipesLoggedUser() {
 }
 
 
-function GetPublicRecipes() {
+function GetPublicRecipes(PageSize, PageNumber) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -78,7 +78,7 @@ function GetPublicRecipes() {
         },
     };
 
-    return fetch(API_URL + '/api/Recipes/GetPublicRecipes', requestOptions)
+    return fetch(API_URL + `/api/Recipes/GetPublicRecipes/${PageSize}/${PageNumber}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {

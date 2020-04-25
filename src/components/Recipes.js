@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
-import { Spinner, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Spinner, Container, Row, Col, Alert, Button } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import { Authentication } from "../helpers/Authentication"
 
@@ -12,8 +12,17 @@ class Recipes extends Component {
             DuringOperation: false,
             UserOrPublic: "User",
             InfoMessage: "",
-            Recipes: []
+            Recipes: [],
+            CanNext : false,
+            CanPrevious: false,
+            PageSize : 10,
+            TotalPages : 1,
+            PageNumberUserRecipes : 1,
+            PageNumberPublicRecipes : 1,
         }
+
+        this.PreviousPage = this.PreviousPage.bind(this);
+        this.NextPage = this.NextPage.bind(this);
     }
 
 
@@ -51,22 +60,23 @@ class Recipes extends Component {
  
              if (pathName === "/PublicRecipes") {
                  this.setState({ UserOrPublic: "Public" })
-                 this.LoadPublicRecipes()
+                 this.LoadPublicRecipes(this.state.PageSize, this.state.PageNumberPublicRecipes)
              }
              else {
                  this.setState({ UserOrPublic: "User" })
-                 this.LoadUserRecipes()
+                 this.LoadUserRecipes(this.state.PageSize, this.state.PageNumberUserRecipes)
              }
  
          } catch (error) {
              this.setState({ UserOrPublic: "User" })
-             this.LoadUserRecipes()
+             this.LoadUserRecipes(this.state.PageSize, this.state.PageNumberUserRecipes)
          }
     }
 
-    LoadUserRecipes() {
+    LoadUserRecipes(PageSize, PageNumber) {
         this.setState({ DuringOperation: true })
-        let result = RecipesEndPointAPI.GetAllRecipesLoggedUser()
+
+        let result = RecipesEndPointAPI.GetAllRecipesLoggedUser(PageSize, PageNumber)
 
         result.then(data => {
             console.log("Pobrano dane użytkownika")
@@ -74,6 +84,9 @@ class Recipes extends Component {
             console.log(data)
             this.setState({ Recipes: data })
             this.setState({ DuringOperation: false })
+
+            this.setState({TotalPages : data[0].totalPages})
+            this.NavigationButtonsActiveDeactive(PageNumber)
             this.DonwloadRecipeImage();
         })
             .catch(error => {
@@ -100,9 +113,10 @@ class Recipes extends Component {
     }
 
 
-    LoadPublicRecipes() {
+    LoadPublicRecipes(PageSize, PageNumber) {
         this.setState({ DuringOperation: true })
-        let result = RecipesEndPointAPI.GetPublicRecipes()
+
+        let result = RecipesEndPointAPI.GetPublicRecipes(PageSize, PageNumber)
 
         result.then(data => {
             console.log("Pobrano dane użytkownika")
@@ -110,6 +124,9 @@ class Recipes extends Component {
             console.log(data)
             this.setState({ Recipes: data })
             this.setState({ DuringOperation: false })
+
+            this.setState({TotalPages : data[0].totalPages})
+            this.NavigationButtonsActiveDeactive(PageNumber)
             this.DonwloadRecipeImage();
         })
             .catch(error => {
@@ -183,6 +200,58 @@ class Recipes extends Component {
         });
     }
 
+    PreviousPage(){
+
+        let actualPage = this.state.PageNumberUserRecipes;
+
+      if(this.state.UserOrPublic === "User")
+      {
+        this.setState(prevstate => ({ PageNumberUserRecipes: prevstate.PageNumberUserRecipes - 1}));
+          this.LoadUserRecipes(this.state.PageSize, actualPage - 1)
+      }
+      else{
+        this.setState(prevstate => ({ PageNumberPublicRecipes: prevstate.PageNumberPublicRecipes - 1}));
+          this.LoadUserRecipes(this.state.PageSize, actualPage - 1)
+      }
+    }
+
+    NextPage()
+    {
+
+        let actualPage = this.state.PageNumberUserRecipes;
+
+        if(this.state.UserOrPublic === "User")
+        {
+            this.setState(prevstate => ({ PageNumberUserRecipes: prevstate.PageNumberUserRecipes + 1}));
+            this.LoadUserRecipes(this.state.PageSize, actualPage + 1)
+        }
+        else{
+            this.setState(prevstate => ({ PageNumberPublicRecipes: prevstate.PageNumberPublicRecipes + 1}));
+            this.LoadUserRecipes(this.state.PageSize, actualPage + 1)
+        }
+    }
+
+    NavigationButtonsActiveDeactive(pageNumber)
+    {
+        if (pageNumber <= 1)
+        {
+            this.setState({CanPrevious : false});
+        }
+        else
+        {
+            this.setState({CanPrevious : true});
+        }
+
+        if (pageNumber >= this.state.TotalPages)
+        {
+            this.setState({CanNext : false});
+        }
+        else
+        {
+            this.setState({CanNext : true});
+        }
+    }
+
     render() {
         if (this.state.DuringOperation) {
             return (
@@ -219,10 +288,17 @@ class Recipes extends Component {
                         <p className="text-center"> {item.name}</p>
                     </div>
                 </Col>)
+
+                
             return (
                 <Container fluid>
                     <Row>
                         {recipes}
+
+                        <Button variant="primary" size="lg" disabled={!this.state.CanPrevious} onClick={this.PreviousPage}> &lt;= </Button>
+            <p>Strona {this.state.UserOrPublic === "User" ? this.state.PageNumberUserRecipes : this.state.PageNumberPublicRecipes} z {this.state.TotalPages}</p>
+            <Button variant="primary" size="lg" disabled={!this.state.CanNext} onClick={this.NextPage}> =&gt; </Button>
+
                     </Row>
                 </Container>
 
