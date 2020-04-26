@@ -56,15 +56,26 @@ class Recipes extends Component {
     {
         try {
             let pathName = window.location.pathname;
+           
             console.log(pathName);
  
              if (pathName === "/PublicRecipes") {
+                let pageNumber = this.props.location.pageBackPublic
+                if(pageNumber === undefined)
+                pageNumber = this.state.PageNumberPublicRecipes
+
+                 this.setState({ PageNumberPublicRecipes: pageNumber})
                  this.setState({ UserOrPublic: "Public" })
-                 this.LoadPublicRecipes(this.state.PageSize, this.state.PageNumberPublicRecipes)
+                 this.LoadPublicRecipes(this.state.PageSize, pageNumber)
              }
              else {
+                let pageNumber = this.props.location.pageBackUser
+                if(pageNumber === undefined)
+                pageNumber = this.state.PageNumberUserRecipes
+
+                this.setState({ PageNumberUserRecipes: pageNumber})
                  this.setState({ UserOrPublic: "User" })
-                 this.LoadUserRecipes(this.state.PageSize, this.state.PageNumberUserRecipes)
+                 this.LoadUserRecipes(this.state.PageSize, pageNumber)
              }
  
          } catch (error) {
@@ -155,7 +166,7 @@ class Recipes extends Component {
     DonwloadRecipeImage() {
         let that = this
         let outside
-        this.setState({ DuringOperation: true })
+        //this.setState({ DuringOperation: true })
 
         this.state.Recipes.forEach(function (item, key) {
 
@@ -201,33 +212,40 @@ class Recipes extends Component {
     }
 
     PreviousPage(){
+      if(this.state.UserOrPublic === "User")
+      {
 
         let actualPage = this.state.PageNumberUserRecipes;
 
-      if(this.state.UserOrPublic === "User")
-      {
         this.setState(prevstate => ({ PageNumberUserRecipes: prevstate.PageNumberUserRecipes - 1}));
           this.LoadUserRecipes(this.state.PageSize, actualPage - 1)
       }
       else{
+
+        let actualPage = this.state.PageNumberPublicRecipes;
+
         this.setState(prevstate => ({ PageNumberPublicRecipes: prevstate.PageNumberPublicRecipes - 1}));
-          this.LoadUserRecipes(this.state.PageSize, actualPage - 1)
+          this.LoadPublicRecipes(this.state.PageSize, actualPage - 1)
       }
     }
 
     NextPage()
     {
-
-        let actualPage = this.state.PageNumberUserRecipes;
-
         if(this.state.UserOrPublic === "User")
         {
+
+            let actualPage = this.state.PageNumberUserRecipes;
+
             this.setState(prevstate => ({ PageNumberUserRecipes: prevstate.PageNumberUserRecipes + 1}));
             this.LoadUserRecipes(this.state.PageSize, actualPage + 1)
         }
         else{
+
+
+            let actualPage = this.state.PageNumberPublicRecipes;
+
             this.setState(prevstate => ({ PageNumberPublicRecipes: prevstate.PageNumberPublicRecipes + 1}));
-            this.LoadUserRecipes(this.state.PageSize, actualPage + 1)
+            this.LoadPublicRecipes(this.state.PageSize, actualPage + 1)
         }
     }
 
@@ -277,7 +295,9 @@ class Recipes extends Component {
                     {
                         pathname: `/RecipePreview/${item.recipeId}`,
                         myCustomProps: item,
-                        myCustomProps2: this.state.UserOrPublic
+                        myCustomProps2: this.state.UserOrPublic,
+                        pageBackUser: this.state.PageNumberUserRecipes,
+                        pageBackPublic: this.state.PageNumberPublicRecipes
                     }} className={item.DisplayAsPublic ? 'PublicRecipe' : null} key={item.recipeId}>
 
 
@@ -295,10 +315,17 @@ class Recipes extends Component {
                     <Row>
                         {recipes}
 
-                        <Button variant="primary" size="lg" disabled={!this.state.CanPrevious} onClick={this.PreviousPage}> &lt;= </Button>
-            <p>Strona {this.state.UserOrPublic === "User" ? this.state.PageNumberUserRecipes : this.state.PageNumberPublicRecipes} z {this.state.TotalPages}</p>
+                        <Col md={12}>
+                        <div className="d-flex justify-content-center mt-3">
+                        <Button className="mr-3" variant="primary" size="lg" disabled={!this.state.CanPrevious} onClick={this.PreviousPage}> &lt;= </Button>
+            <p className="mr-3 ">Strona {this.state.UserOrPublic === "User" ? this.state.PageNumberUserRecipes : this.state.PageNumberPublicRecipes} z {this.state.TotalPages}</p>
             <Button variant="primary" size="lg" disabled={!this.state.CanNext} onClick={this.NextPage}> =&gt; </Button>
 
+                        </div>
+                       
+                        </Col>
+
+                
                     </Row>
                 </Container>
 

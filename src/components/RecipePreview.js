@@ -23,7 +23,8 @@ class RecipePreview extends Component {
             RecipeDeleted: false,
             DuringOperation: false,
             InfoMessage: "",
-            LastVisit : ""
+            LastVisit : "",
+            PageBack: "1",
         }
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleModalShow = this.handleModalShow.bind(this);
@@ -44,6 +45,8 @@ class RecipePreview extends Component {
             this.setState({ nameOfImage: this.props.location.myCustomProps.item.nameOfImage })
             this.setState({ isPublic: this.props.location.myCustomProps.item.isPublic })
             this.setState({ userName: this.props.location.myCustomProps.item.userName })
+            this.setState({ PageBackUser: (this.props.location.pageBackUser)})
+            this.setState({ PageBackPublic: (this.props.location.pageBackPublic)})
 
 if(this.props.location.myCustomProps2 === "User")
 {
@@ -281,7 +284,12 @@ else{
                             </Col>
 
                             <Col  >
-                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={this.state.LastVisit} >Powrót</Button>
+                                <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={
+                    {
+                        pathname: this.state.LastVisit,
+                        pageBackUser: this.state.PageBackUser,
+                        pageBackPublic: this.state.PageBackPublic,
+                    }} >Powrót</Button>
                             </Col>
 
                             <Col className="align-self-center" >
