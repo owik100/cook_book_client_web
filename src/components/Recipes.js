@@ -78,7 +78,20 @@ class Recipes extends Component {
             let pathName = window.location.pathname;
            
             console.log(pathName);
- 
+
+        let pageNumberUser = this.props.location.pageBackUser
+        let pageNumberPublic = this.props.location.pageBackPublic
+        let pageNumberFavourites = this.props.location.pageBackFavourites
+
+        if(pageNumberUser != undefined)
+        this.setState({ PageNumberUserRecipes: pageNumberUser})
+
+        if(pageNumberPublic != undefined)
+        this.setState({ PageNumberPublicRecipes: pageNumberPublic})
+
+        if(pageNumberFavourites != undefined)
+        this.setState({ PageNumberFavouritesRecipes: pageNumberFavourites})
+
              if (pathName === "/PublicRecipes") {
                 let pageNumber = this.props.location.pageBackPublic
                 if(pageNumber === undefined)
@@ -384,7 +397,7 @@ class Recipes extends Component {
                     </div>
                 </Col>)
 
-        
+     
 
                 
             return (
@@ -395,7 +408,16 @@ class Recipes extends Component {
                         <Col md={12}>
                         <div className="d-flex justify-content-center mt-3">
                         <Button className="mr-3" variant="primary" size="lg" disabled={!this.state.CanPrevious} onClick={this.PreviousPage}> &lt;= </Button>
-            <p className="mr-3 ">Strona {this.state.UserOrPublicOrFavourites === "User" ? this.state.PageNumberUserRecipes : this.state.PageNumberPublicRecipes} z {this.state.TotalPages}</p>
+                        <p className="mr-3 ">
+                        {(() => {
+                            switch (this.state.UserOrPublicOrFavourites) {
+                            case "User":   return "Strona " + this.state.PageNumberUserRecipes + " z " + this.state.TotalPages;
+                            case "Public": return "Strona " + this.state.PageNumberPublicRecipes + " z " + this.state.TotalPages;
+                            case "Favourites":  return "Strona " + this.state.PageNumberFavouritesRecipes + " z " + this.state.TotalPages;
+                            default:      return "Strona " + this.state.PageNumberUserRecipes + " z " + this.state.TotalPages;
+                            }
+                        })()}
+                        </p>
             <Button variant="primary" size="lg" disabled={!this.state.CanNext} onClick={this.NextPage}> =&gt; </Button>
 
                         </div>
