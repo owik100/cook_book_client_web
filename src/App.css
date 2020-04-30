@@ -53,6 +53,12 @@
 .PublicRecipe{
   border: solid  green;
   border-radius: 25px;
+  /* margin: 2px; */
+}
+
+.FavouriteRecipe{
+  border: solid  yellow;
+  border-radius: 25px;
 }
 
 .singleRecipe img{

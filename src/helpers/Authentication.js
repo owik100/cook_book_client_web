@@ -9,7 +9,8 @@ export const Authentication = {
     SaveUserData,
     LoadUserEmail,
     LoadUserId,
-    LoadUserName
+    LoadUserName,
+    LoadUserFavouritesRecipes
 };
 
 
@@ -41,6 +42,7 @@ function SaveUserData(userJson) {
     Cookie.set("userName", userJson.userName, { expires: 7 });
     Cookie.set("email", userJson.email, { expires: 7 });
     Cookie.set("id", userJson.id, { expires: 7 });
+    Cookie.set("favouriteRecipes", userJson.favouriteRecipes, { expires: 7 });
 }
 
 function LoadUserName() {
@@ -53,4 +55,8 @@ function LoadUserEmail() {
 
 function LoadUserId() {
     return Cookie.get("id") ? Cookie.get("id") : null;
+}
+
+function LoadUserFavouritesRecipes() {
+    return Cookie.get("favouriteRecipes") ? Cookie.get("favouriteRecipes") : null;
 }

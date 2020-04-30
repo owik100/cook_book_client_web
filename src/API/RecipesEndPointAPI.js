@@ -8,7 +8,8 @@ export const RecipesEndPointAPI = {
     InsertRecipe,
     GetRecipeByID,
     PutRecipes,
-    GetPublicRecipes
+    GetPublicRecipes,
+    GetFavouritesRecipes
 };
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -79,6 +80,32 @@ function GetPublicRecipes(PageSize, PageNumber) {
     };
 
     return fetch(API_URL + `/api/Recipes/GetPublicRecipes/${PageSize}/${PageNumber}`, requestOptions)
+        .then(response => {
+            // reject not ok response
+            if (!response.ok) {
+                return Promise.reject(response)
+            }
+            return response.json()
+        })
+        // catch error response and extract the error message
+        .catch(async response => {
+            const error = await response.text().then(text => text)
+            return Promise.reject(error)
+        })
+}
+
+function GetFavouritesRecipes(PageSize, PageNumber) {
+    let Authorization = AuthHeaders.GetBearer()
+
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization,
+        },
+    };
+
+    return fetch(API_URL + `/api/Recipes/GetFavouritesRecipes/${PageSize}/${PageNumber}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {

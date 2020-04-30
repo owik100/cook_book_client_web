@@ -1,10 +1,12 @@
 import React from 'react';
 import { AuthHeaders } from '../helpers/AuthHeaders'
+import { Authentication } from '../helpers/Authentication'
 
 export const APIHelper = {
     Register,
     LogIn,
-    GetUserData
+    GetUserData,
+    EditUser
 };
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -87,4 +89,42 @@ function GetUserData() {
             const error = await response.text().then(text => text)
             return Promise.reject(error)
         })
+}
+
+
+function EditUser(FavouriteRecipes) {
+
+    let Authorization = AuthHeaders.GetBearer()
+
+    let Id = Authentication.LoadUserId();
+    let UserName = Authentication.LoadUserName();
+    let Email = Authentication.LoadUserEmail();
+
+    var formdata = new FormData();
+    formdata.append("Id", Id);
+    formdata.append("UserName", UserName);
+    formdata.append("Email", Email);
+    formdata.append("FavouriteRecipes", FavouriteRecipes);
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            Authorization,
+        },
+        body: formdata,
+    };
+
+    return fetch(API_URL + `/api/User/${Id}`, requestOptions)
+    .then(response => {
+        // reject not ok response
+        if (!response.ok) {
+            return Promise.reject(response)
+        }
+        return response.text()
+    })
+    // catch error response and extract the error message
+    .catch(async response => {
+        const error = await response.text().then(text => text)
+        return Promise.reject(error)
+    })
 }

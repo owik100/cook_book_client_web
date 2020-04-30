@@ -10,7 +10,7 @@ class Recipes extends Component {
         super(props)
         this.state = {
             DuringOperation: false,
-            UserOrPublic: "User",
+            UserOrPublicOrFavourites: "User",
             InfoMessage: "",
             Recipes: [],
             CanNext : false,
@@ -19,6 +19,7 @@ class Recipes extends Component {
             TotalPages : 1,
             PageNumberUserRecipes : 1,
             PageNumberPublicRecipes : 1,
+            PageNumberFavouritesRecipes : 1,
         }
 
         this.PreviousPage = this.PreviousPage.bind(this);
@@ -40,14 +41,33 @@ class Recipes extends Component {
 
     AddDisplayAsPublicProperty(data)
     {
+        let pathName = window.location.pathname;
+
         data.forEach(function (element) {
             element.DisplayAsPublic = true;
-            if(element.isPublic && element.userName === Authentication.LoadUserName())
+            if(element.isPublic && element.userName === Authentication.LoadUserName() && (pathName === "/PublicRecipes" || pathName === "/UserRecipes"))
             {
                 element.DisplayAsPublic = true;
             }
             else{
                 element.DisplayAsPublic = false;
+            }   
+          });
+    }
+
+    AddDisplayAsFavouritesProperty(data)
+    {
+        let pathName = window.location.pathname;
+        let favourites = Authentication.LoadUserFavouritesRecipes()
+
+        data.forEach(function (element) {
+            element.DisplayAsFavourite = true;
+            if(pathName === "/PublicRecipes" && favourites.includes(element.recipeId))
+            {
+                element.DisplayAsFavourite = true;
+            }
+            else{
+                element.DisplayAsFavourites = false;
             }   
           });
     }
@@ -65,21 +85,35 @@ class Recipes extends Component {
                 pageNumber = this.state.PageNumberPublicRecipes
 
                  this.setState({ PageNumberPublicRecipes: pageNumber})
-                 this.setState({ UserOrPublic: "Public" })
+                 this.setState({ UserOrPublicOrFavourites: "Public" })
                  this.LoadPublicRecipes(this.state.PageSize, pageNumber)
              }
-             else {
+             else if(pathName === "/UserRecipes") {
                 let pageNumber = this.props.location.pageBackUser
                 if(pageNumber === undefined)
                 pageNumber = this.state.PageNumberUserRecipes
 
                 this.setState({ PageNumberUserRecipes: pageNumber})
-                 this.setState({ UserOrPublic: "User" })
+                 this.setState({ UserOrPublicOrFavourites: "User" })
                  this.LoadUserRecipes(this.state.PageSize, pageNumber)
              }
+             else if(pathName === "/FavouritesRecipes") {
+                let pageNumber = this.props.location.pageBackFavourites
+                if(pageNumber === undefined)
+                pageNumber = this.state.PageNumberFavouritesRecipes
+
+                this.setState({ PageNumberFavouritesRecipes: pageNumber})
+                 this.setState({ UserOrPublicOrFavourites: "Favourites" })
+                 this.LoadFavouritesRecipes(this.state.PageSize, pageNumber)
+             }
+             else{
+                this.setState({ UserOrPublicOrFavourites: "User" })
+                this.LoadUserRecipes(this.state.PageSize, this.state.PageNumberUserRecipes)
+             }
+ 
  
          } catch (error) {
-             this.setState({ UserOrPublic: "User" })
+             this.setState({ UserOrPublicOrFavourites: "User" })
              this.LoadUserRecipes(this.state.PageSize, this.state.PageNumberUserRecipes)
          }
     }
@@ -132,6 +166,46 @@ class Recipes extends Component {
         result.then(data => {
             console.log("Pobrano dane użytkownika")
             this.AddDisplayAsPublicProperty(data)
+            this.AddDisplayAsFavouritesProperty(data)
+            console.log(data)
+            this.setState({ Recipes: data })
+            this.setState({ DuringOperation: false })
+
+            this.setState({TotalPages : data[0].totalPages})
+            this.NavigationButtonsActiveDeactive(PageNumber)
+            this.DonwloadRecipeImage();
+        })
+            .catch(error => {
+                //Connection problem
+                if (error == "TypeError: response.text is not a function") {
+                    this.setState({ InfoMessage: "Problem z połączeniem" })
+                    console.log('Problem z połączeniem')
+                    this.setState({ DuringOperation: false })
+                }
+                else {
+                    try {
+                        var obj = JSON.parse(error)
+                        console.log(obj.message)
+                        this.setState({ InfoMessage: obj.message })
+                        this.setState({ DuringOperation: false })
+                    }
+                    //Another problem...
+                    catch (error) {
+                        console.log(error);
+                        this.setState({ DuringOperation: false })
+                    }
+                }
+            })
+    }
+
+    LoadFavouritesRecipes(PageSize, PageNumber) {
+        this.setState({ DuringOperation: true })
+
+        let result = RecipesEndPointAPI.GetFavouritesRecipes(PageSize, PageNumber)
+
+        result.then(data => {
+            console.log("Pobrano dane użytkownika")
+           
             console.log(data)
             this.setState({ Recipes: data })
             this.setState({ DuringOperation: false })
@@ -212,7 +286,7 @@ class Recipes extends Component {
     }
 
     PreviousPage(){
-      if(this.state.UserOrPublic === "User")
+      if(this.state.UserOrPublicOrFavourites === "User")
       {
 
         let actualPage = this.state.PageNumberUserRecipes;
@@ -231,7 +305,7 @@ class Recipes extends Component {
 
     NextPage()
     {
-        if(this.state.UserOrPublic === "User")
+        if(this.state.UserOrPublicOrFavourites === "User")
         {
 
             let actualPage = this.state.PageNumberUserRecipes;
@@ -295,10 +369,11 @@ class Recipes extends Component {
                     {
                         pathname: `/RecipePreview/${item.recipeId}`,
                         myCustomProps: item,
-                        myCustomProps2: this.state.UserOrPublic,
+                        myCustomProps2: this.state.UserOrPublicOrFavourites,
                         pageBackUser: this.state.PageNumberUserRecipes,
-                        pageBackPublic: this.state.PageNumberPublicRecipes
-                    }} className={item.DisplayAsPublic ? 'PublicRecipe' : null} key={item.recipeId}>
+                        pageBackPublic: this.state.PageNumberPublicRecipes,
+                        pageBackFavourites: this.state.PageNumberFavouritesRecipes
+                    }} className={ item.DisplayAsPublic ? 'PublicRecipe' : null + item.DisplayAsFavourite ? 'FavouriteRecipe' : null} key={item.recipeId}>
 
 
                     <div className="mt-3 singleRecipe" >
@@ -309,6 +384,8 @@ class Recipes extends Component {
                     </div>
                 </Col>)
 
+        
+
                 
             return (
                 <Container fluid>
@@ -318,7 +395,7 @@ class Recipes extends Component {
                         <Col md={12}>
                         <div className="d-flex justify-content-center mt-3">
                         <Button className="mr-3" variant="primary" size="lg" disabled={!this.state.CanPrevious} onClick={this.PreviousPage}> &lt;= </Button>
-            <p className="mr-3 ">Strona {this.state.UserOrPublic === "User" ? this.state.PageNumberUserRecipes : this.state.PageNumberPublicRecipes} z {this.state.TotalPages}</p>
+            <p className="mr-3 ">Strona {this.state.UserOrPublicOrFavourites === "User" ? this.state.PageNumberUserRecipes : this.state.PageNumberPublicRecipes} z {this.state.TotalPages}</p>
             <Button variant="primary" size="lg" disabled={!this.state.CanNext} onClick={this.NextPage}> =&gt; </Button>
 
                         </div>

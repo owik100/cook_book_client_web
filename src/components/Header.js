@@ -45,6 +45,7 @@ function NavIfLogged() {
                 <Nav.Link as={Link} to="/Edit/0" >Dodaj przepis</Nav.Link>
                 <Nav.Link as={Link} to="/UserRecipes" >Moje przepisy</Nav.Link>
                 <Nav.Link as={Link} to="/PublicRecipes" >Odkrywaj przepisy</Nav.Link>
+                <Nav.Link as={Link} to="/FavouritesRecipes" >Ulubione przepisy</Nav.Link>
             </Nav>
         )
     }

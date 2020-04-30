@@ -47,13 +47,18 @@ class RecipePreview extends Component {
             this.setState({ userName: this.props.location.myCustomProps.item.userName })
             this.setState({ PageBackUser: (this.props.location.pageBackUser)})
             this.setState({ PageBackPublic: (this.props.location.pageBackPublic)})
+            this.setState({ PageBackFavourites: (this.props.location.pageBackFavourites)})
 
 if(this.props.location.myCustomProps2 === "User")
 {
     this.setState({ LastVisit: "/UserRecipes"})
 }
-else{
+else if (this.props.location.myCustomProps2 === "Public")
+{
     this.setState({ LastVisit: "/PublicRecipes"})
+}
+else{
+    this.setState({ LastVisit: "/FavouritesRecipes"})
 }
 
 
@@ -289,6 +294,7 @@ else{
                         pathname: this.state.LastVisit,
                         pageBackUser: this.state.PageBackUser,
                         pageBackPublic: this.state.PageBackPublic,
+                        pageBackFavourites: this.state.PageBackFavourites,
                     }} >Powrót</Button>
                             </Col>
 

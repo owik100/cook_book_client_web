@@ -41,6 +41,8 @@ function App() {
 
           <PrivateRoute path="/PublicRecipes" component={Recipes} />
 
+          <PrivateRoute path="/FavouritesRecipes" component={Recipes} />
+
 
           <PrivateRoute path="/RecipePreview/:id" component={RecipePreview} />
 
