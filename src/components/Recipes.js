@@ -44,8 +44,8 @@ class Recipes extends Component {
         let pathName = window.location.pathname;
 
         data.forEach(function (element) {
-            element.DisplayAsPublic = true;
-            if(element.isPublic && element.userName === Authentication.LoadUserName() && (pathName === "/PublicRecipes" || pathName === "/UserRecipes"))
+            element.DisplayAsPublic = false;
+            if(element.isPublic && element.userName === Authentication.LoadUserName() && (pathName === "/PublicRecipes" || pathName === "/UserRecipes" || pathName === "/"))
             {
                 element.DisplayAsPublic = true;
             }
@@ -61,7 +61,7 @@ class Recipes extends Component {
         let favourites = Authentication.LoadUserFavouritesRecipes()
 
         data.forEach(function (element) {
-            element.DisplayAsFavourite = true;
+            element.DisplayAsFavourite = false;
             if(pathName === "/PublicRecipes" && favourites.includes(element.recipeId))
             {
                 element.DisplayAsFavourite = true;
@@ -376,29 +376,28 @@ class Recipes extends Component {
         }
         else {
 
-            const recipes = this.state.Recipes.map(item =>
-
-                <Col sm={4} md={3} lg={2} xl={2} as={Link} to={
-                    {
-                        pathname: `/RecipePreview/${item.recipeId}`,
-                        myCustomProps: item,
-                        myCustomProps2: this.state.UserOrPublicOrFavourites,
-                        pageBackUser: this.state.PageNumberUserRecipes,
-                        pageBackPublic: this.state.PageNumberPublicRecipes,
-                        pageBackFavourites: this.state.PageNumberFavouritesRecipes
-                    }} className={ item.DisplayAsPublic ? 'PublicRecipe' : null + item.DisplayAsFavourite ? 'FavouriteRecipe' : null} key={item.recipeId}>
-
-
-                    <div className="mt-3 singleRecipe" >
-                        <div class="d-flex justify-content-center">
-                            <img src={item.image} />
+            const recipes = this.state.Recipes.map(item =>{
+                return(
+                    <Col sm={4} md={3} lg={2} xl={2} as={Link} to={
+                        {
+                            pathname: `/RecipePreview/${item.recipeId}`,
+                            myCustomProps: item,
+                            myCustomProps2: this.state.UserOrPublicOrFavourites,
+                            pageBackUser: this.state.PageNumberUserRecipes,
+                            pageBackPublic: this.state.PageNumberPublicRecipes,
+                            pageBackFavourites: this.state.PageNumberFavouritesRecipes
+                        }} 
+                         className={ item.DisplayAsPublic ? 'PublicRecipe' : item.DisplayAsFavourite ? 'FavouriteRecipe' : null} key={item.recipeId}>
+    
+                        <div className="mt-3 singleRecipe" >
+                            <div class="d-flex justify-content-center">
+                                <img src={item.image} />
+                            </div>
+                            <p className="text-center"> {item.name}</p>
                         </div>
-                        <p className="text-center"> {item.name}</p>
-                    </div>
-                </Col>)
-
-     
-
+                    </Col>
+                )
+           })
                 
             return (
                 <Container fluid>
