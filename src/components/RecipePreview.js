@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
 import { Spinner, Container, Row, Col, Alert, Button, Modal } from 'react-bootstrap';
 import { Authentication } from "../helpers/Authentication"
+import { APIHelper } from '../API/APIHelper';
 import { Link, Redirect } from "react-router-dom";
 export * from 'react-router';
 
@@ -25,10 +26,12 @@ class RecipePreview extends Component {
             InfoMessage: "",
             LastVisit : "",
             PageBack: "1",
+            IsFavourite: false,
         }
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleModalShow = this.handleModalShow.bind(this);
         this.handleRecipeDelete = this.handleRecipeDelete.bind(this);
+        this.handleFavouriteCLick = this.handleFavouriteCLick.bind(this);
 
     }
 
@@ -48,6 +51,12 @@ class RecipePreview extends Component {
             this.setState({ PageBackUser: (this.props.location.pageBackUser)})
             this.setState({ PageBackPublic: (this.props.location.pageBackPublic)})
             this.setState({ PageBackFavourites: (this.props.location.pageBackFavourites)})
+
+            let favourites = Authentication.LoadUserFavouritesRecipes()
+
+            if(favourites.includes(this.props.location.myCustomProps.item.recipeId )){
+                this.setState({ IsFavourite: (true)})
+            }
 
 if(this.props.location.myCustomProps2 === "User")
 {
@@ -82,6 +91,13 @@ else{
 
                 this.setState({ LastVisit: "/UserRecipes"})
 
+                let favourites = Authentication.LoadUserFavouritesRecipes()
+
+                if(favourites.includes(data.recipeId )){
+                    this.setState({ IsFavourite: (true)})
+                }
+
+
                 this.setState({ DuringOperation: false })
                 this.DonwloadRecipeImage();
             })
@@ -107,7 +123,6 @@ else{
                     }
                 })
         }
-
     }
 
     DonwloadRecipeImage() {
@@ -159,6 +174,62 @@ else{
 
     handleModalClose(event) {
         this.setState({ showModal: false })
+
+    }
+
+    handleFavouriteCLick(event) {
+
+        let localBoolFavourites = false;
+        let favourites = Authentication.LoadUserFavouritesRecipes()
+        let favourtesArr = JSON.parse(favourites);
+
+        if(this.state.IsFavourite){     
+            localBoolFavourites = true;
+
+            const index = favourtesArr.indexOf(this.state.ID);
+            if (index > -1) {
+                favourtesArr.splice(index, 1);
+            }
+        }
+        else{
+            localBoolFavourites = false;
+
+            favourtesArr.push(this.state.ID) 
+        }
+            
+            let result =  APIHelper.EditUser(favourtesArr)
+
+            result.then(data => {
+                if(localBoolFavourites){
+                    console.log("Usunięto z ulubionych!")
+                    this.setState({ IsFavourite: (false)})
+                }
+                else{
+                    console.log("Dodano do ulubionych!")
+                    this.setState({ IsFavourite: (true)})
+                }
+
+                Authentication.SaveFavouritesRecipes(favourtesArr)
+               
+            })
+                .catch(error => {
+                    //Connection problem
+                    if (error == "TypeError: response.text is not a function") {
+                        console.log('Problem z połączeniem')
+                    }
+                    else {
+                        try {
+                            var obj = JSON.parse(error)
+                            console.log(obj.message)
+                        }
+                        //Another problem...
+                        catch (error) {
+                            console.log(error);
+                        }
+                    }
+                })
+
+        
 
     }
 
@@ -222,6 +293,7 @@ else{
         let editButton;
         let deleteButton;
         let authorInfo;
+        let favouriteButton;
 
         if (!this.state.isPublic || this.state.userName === Authentication.LoadUserName()) 
         {      editButton =  <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={
@@ -233,6 +305,7 @@ else{
             deleteButton =  <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>
         
             authorInfo = null;
+            favouriteButton = null;
         } 
 
         else 
@@ -240,6 +313,10 @@ else{
             deleteButton = null
 
         authorInfo = <p  className="text-center">Autor przepisu: {this.state.userName}</p>
+
+        favouriteButton =  <Button onClick={this.handleFavouriteCLick} size="lg" variant="outline-warning" className="mt-3 mb-3  mx-auto d-block"> <img className="img-fluid imgStar" 
+         src= {this.state.IsFavourite ? '/starFull.png' : '/starEmpty.png'} /> </Button>
+
          }
 
         const ingredients = this.state.Ingredients.map(item =>
@@ -259,7 +336,7 @@ else{
         } else if(this.state.InfoMessage != "")
         {
             return (
-            <Alert className="text-center"  variant="danger">
+            <Alert className="text-center mt-3"  variant="danger">
             {this.state.InfoMessage}
           </Alert>
           )
@@ -301,9 +378,11 @@ else{
                             <Col className="align-self-center" >
                                {editButton}
                                {authorInfo}
+                           
                             </Col>
                             <Col  >
                                {deleteButton}
+                               {favouriteButton}
                             </Col>
 
                         </Row>

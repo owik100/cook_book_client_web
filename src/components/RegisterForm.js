@@ -111,7 +111,7 @@ class RegisterForm extends Component {
             }
             else if (this.state.InfoMessage != "" && this.state.InfoMessageIsError == true) {
                 return (
-                    <Alert className="text-center" variant="danger">
+                    <Alert className="text-center mt-3" variant="danger">
                         {this.state.InfoMessage}
                     </Alert>
                 );

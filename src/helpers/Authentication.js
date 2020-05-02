@@ -10,7 +10,8 @@ export const Authentication = {
     LoadUserEmail,
     LoadUserId,
     LoadUserName,
-    LoadUserFavouritesRecipes
+    LoadUserFavouritesRecipes,
+    SaveFavouritesRecipes
 };
 
 
@@ -59,4 +60,9 @@ function LoadUserId() {
 
 function LoadUserFavouritesRecipes() {
     return Cookie.get("favouriteRecipes") ? Cookie.get("favouriteRecipes") : null;
+}
+
+function SaveFavouritesRecipes(favouriteRecipes)
+{
+    Cookie.set("favouriteRecipes", favouriteRecipes, { expires: 7 });
 }

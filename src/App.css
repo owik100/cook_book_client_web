@@ -66,6 +66,10 @@
 width:175;
 }
 
+.imgStar{
+  max-height: 35px;
+}
+
 .CheckBoxIsRecipePublic label{
 color: green
 }

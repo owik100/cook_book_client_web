@@ -117,7 +117,7 @@ class LoginForm extends Component {
         else {
             if (this.state.InfoMessage != "") {
                 return (
-                    <Alert className="text-center" variant="danger">
+                    <Alert className="text-center mt-3" variant="danger">
                     {this.state.InfoMessage}
                 </Alert>
                 );
