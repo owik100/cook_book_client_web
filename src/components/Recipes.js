@@ -3,6 +3,7 @@ import { RecipesEndPointAPI } from '../API/RecipesEndPointAPI'
 import { Spinner, Container, Row, Col, Alert, Button } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import { Authentication } from "../helpers/Authentication"
+import { APIHelper } from '../API/APIHelper';
 
 class Recipes extends Component {
 
@@ -174,6 +175,8 @@ class Recipes extends Component {
     LoadPublicRecipes(PageSize, PageNumber) {
         this.setState({ DuringOperation: true })
 
+        this.LoadUserData();
+
         let result = RecipesEndPointAPI.GetPublicRecipes(PageSize, PageNumber)
 
         result.then(data => {
@@ -245,6 +248,39 @@ class Recipes extends Component {
                     catch (error) {
                         console.log(error);
                         this.setState({ DuringOperation: false })
+                    }
+                }
+            })
+    }
+
+    //Get user favourites recipes - All. 
+    LoadUserData()
+    {
+        let result = APIHelper.GetUserData()
+
+        result.then(data => {
+            console.log("Pobrano dane użytkownika")
+            console.log(data)
+            Authentication.SaveUserData(data);
+            this.setState({ isLogged: true })
+        })
+            .catch(error => {
+                //Connection problem
+                if (error == "TypeError: response.text is not a function") {
+                    console.log('Problem z połączeniem')
+                    this.setState({ InfoMessage: 'Problem z połączeniem' })
+                    this.setState({ DuringOperation: false })
+                }
+                else {
+                    try {
+                        var obj = JSON.parse(error)
+                        console.log(obj.message)
+                        this.setState({ InfoMessage: obj.message })
+                        this.setState({ DuringOperation: false })
+                    }
+                    //Another problem...
+                    catch (error) {
+                        console.log(error);
                     }
                 }
             })

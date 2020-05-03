@@ -196,8 +196,10 @@ else{
 
             favourtesArr.push(this.state.ID) 
         }
+
+        let arraySemicolon= favourtesArr.join(';')
             
-            let result =  APIHelper.EditUser(favourtesArr)
+            let result =  APIHelper.EditUser(arraySemicolon)
 
             result.then(data => {
                 if(localBoolFavourites){
