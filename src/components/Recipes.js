@@ -437,7 +437,7 @@ class Recipes extends Component {
                 
             return (
                 <Container fluid>
-                    <Row>
+                    <Row className="justify-content-center">
                         {recipes}
 
                         <Col md={12}>
