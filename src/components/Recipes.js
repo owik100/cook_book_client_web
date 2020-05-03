@@ -226,7 +226,14 @@ class Recipes extends Component {
             this.setState({ Recipes: data })
             this.setState({ DuringOperation: false })
 
-            this.setState({TotalPages : data[0].totalPages})
+            if(data.length > 0)
+            {
+                this.setState({TotalPages : data[0].totalPages})
+            }
+            else{
+                this.setState({TotalPages : 1})
+            }
+            
             this.NavigationButtonsActiveDeactive(PageNumber)
             this.DonwloadRecipeImage();
         })
