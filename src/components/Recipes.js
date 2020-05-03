@@ -151,7 +151,7 @@ class Recipes extends Component {
             else{
                 this.setState({TotalPages : 1})
             }
-            
+
             this.NavigationButtonsActiveDeactive(PageNumber)
             this.DonwloadRecipeImage();
         })
@@ -364,14 +364,21 @@ class Recipes extends Component {
         this.setState(prevstate => ({ PageNumberUserRecipes: prevstate.PageNumberUserRecipes - 1}));
           this.LoadUserRecipes(this.state.PageSize, actualPage - 1)
       }
-      else{
+      else if(this.state.UserOrPublicOrFavourites === "Public"){
 
         let actualPage = this.state.PageNumberPublicRecipes;
 
         this.setState(prevstate => ({ PageNumberPublicRecipes: prevstate.PageNumberPublicRecipes - 1}));
           this.LoadPublicRecipes(this.state.PageSize, actualPage - 1)
-      }
+      }  
+    else if(this.state.UserOrPublicOrFavourites === "Favourites"){
+
+        let actualPage = this.state.PageNumberFavouritesRecipes;
+
+        this.setState(prevstate => ({ PageNumberFavouritesRecipes: prevstate.PageNumberFavouritesRecipes - 1}));
+          this.LoadFavouritesRecipes(this.state.PageSize, actualPage - 1)
     }
+}
 
     NextPage()
     {
@@ -383,15 +390,20 @@ class Recipes extends Component {
             this.setState(prevstate => ({ PageNumberUserRecipes: prevstate.PageNumberUserRecipes + 1}));
             this.LoadUserRecipes(this.state.PageSize, actualPage + 1)
         }
-        else{
-
-
+        else if(this.state.UserOrPublicOrFavourites === "Public"){
             let actualPage = this.state.PageNumberPublicRecipes;
 
             this.setState(prevstate => ({ PageNumberPublicRecipes: prevstate.PageNumberPublicRecipes + 1}));
             this.LoadPublicRecipes(this.state.PageSize, actualPage + 1)
-        }
+        } 
+        else if(this.state.UserOrPublicOrFavourites === "Favourites"){
+
+            let actualPage = this.state.PageNumberFavouritesRecipes;
+
+            this.setState(prevstate => ({ PageNumberFavouritesRecipes: prevstate.PageNumberFavouritesRecipes + 1}));
+            this.LoadFavouritesRecipes(this.state.PageSize, actualPage + 1)
     }
+}
 
     NavigationButtonsActiveDeactive(pageNumber)
     {
@@ -444,7 +456,7 @@ class Recipes extends Component {
                             pageBackPublic: this.state.PageNumberPublicRecipes,
                             pageBackFavourites: this.state.PageNumberFavouritesRecipes
                         }} 
-                         className={ item.DisplayAsPublic ? 'PublicRecipe' : item.DisplayAsFavourite ? 'FavouriteRecipe' : null} key={item.recipeId}>
+                         className={ item.DisplayAsPublic ? 'PublicRecipe' : item.DisplayAsFavourite ? 'FavouriteRecipe' : "NormalRecipe"} key={item.recipeId}>
     
                         <div className="mt-3 singleRecipe" >
                             <div class="d-flex justify-content-center">
