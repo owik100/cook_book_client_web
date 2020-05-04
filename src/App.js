@@ -6,6 +6,7 @@ import Main from '../src/Main';
 import Recipes from '../src/components/Recipes'
 import { Authentication } from '../src/helpers/Authentication'
 import RecipePreview from '../src/components/RecipePreview'
+import About from '../src/components/About'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import $ from 'jquery';
@@ -36,6 +37,7 @@ function App() {
 
           <Route path="/Register" component={RegisterForm} />
 
+          <Route path="/About" component={About} />
 
           <PrivateRoute path="/UserRecipes" component={Recipes} />
 

@@ -27,8 +27,8 @@ function AuthButton() {
 function GetName() {
     if (Authentication.LoadUserName() != null && Authentication.isAuthenticated()) {
         return (
-            <Navbar.Text>
-                Witaj {Authentication.LoadUserName()}
+            <Navbar.Text className="AboutUser">
+                Witaj {Authentication.LoadUserName() +"!"}
             </Navbar.Text>
         )
     }
@@ -63,6 +63,7 @@ function Header() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     {NavIfLogged()}
                     <Nav className="justify-content-end">
+                    <Nav.Link className="mr-3" as={Link} to="/About" >O aplikacji</Nav.Link>
                         {GetName()}
                         {AuthButton()}
                     </Nav>
