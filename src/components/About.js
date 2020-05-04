@@ -18,6 +18,7 @@ function About()
             className="App-link"
             href="https://github.com/owik100/Cook-Book"
             target="_blank"
+            rel="noopener noreferrer"
           >
             GitHub
           </a>
