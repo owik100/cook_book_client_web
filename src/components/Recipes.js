@@ -16,7 +16,7 @@ class Recipes extends Component {
             Recipes: [],
             CanNext : false,
             CanPrevious: false,
-            PageSize : 10,
+            PageSize : 15,
             TotalPages : 1,
             PageNumberUserRecipes : 1,
             PageNumberPublicRecipes : 1,
