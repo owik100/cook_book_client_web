@@ -33,8 +33,6 @@ class Recipes extends Component {
     }
     
 
-
-
     componentDidMount() {
         this.CheckPath()
     }
@@ -77,8 +75,6 @@ class Recipes extends Component {
     {
         try {
             let pathName = window.location.pathname;
-           
-            console.log(pathName);
 
         let pageNumberUser = this.props.location.pageBackUser
         let pageNumberPublic = this.props.location.pageBackPublic
@@ -140,7 +136,6 @@ class Recipes extends Component {
         result.then(data => {
             console.log("Pobrano dane użytkownika")
             this.AddDisplayAsPublicProperty(data)
-            console.log(data)
             this.setState({ Recipes: data })
             this.setState({ DuringOperation: false })
 
@@ -190,7 +185,6 @@ class Recipes extends Component {
             console.log("Pobrano dane użytkownika")
             this.AddDisplayAsPublicProperty(data)
             this.AddDisplayAsFavouritesProperty(data)
-            console.log(data)
             this.setState({ Recipes: data })
             this.setState({ DuringOperation: false })
 
@@ -236,7 +230,6 @@ class Recipes extends Component {
         result.then(data => {
             console.log("Pobrano dane użytkownika")
            
-            console.log(data)
             this.setState({ Recipes: data })
             this.setState({ DuringOperation: false })
 
@@ -281,7 +274,6 @@ class Recipes extends Component {
 
         result.then(data => {
             console.log("Pobrano dane użytkownika")
-            console.log(data)
             Authentication.SaveUserData(data);
             this.setState({ isLogged: true })
         })
@@ -325,7 +317,6 @@ class Recipes extends Component {
                 result.then(data => {
                     outside = URL.createObjectURL(data)
                     item.image = outside
-                    console.log(outside)
                     that.setState({
                         Recipes: that.state.Recipes.map(el => (el.recipeId === item.recipeId ? { ...el, item } : el))
                     });
@@ -450,8 +441,8 @@ class Recipes extends Component {
                     <Col sm={4} md={3} lg={2} xl={2} as={Link} to={
                         {
                             pathname: `/RecipePreview/${item.recipeId}`,
-                            myCustomProps: item,
-                            myCustomProps2: this.state.UserOrPublicOrFavourites,
+                            recipeProps: item,
+                            UserOrPublicOrFavouritesProps: this.state.UserOrPublicOrFavourites,
                             pageBackUser: this.state.PageNumberUserRecipes,
                             pageBackPublic: this.state.PageNumberPublicRecipes,
                             pageBackFavourites: this.state.PageNumberFavouritesRecipes

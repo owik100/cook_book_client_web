@@ -21,7 +21,7 @@ class AddOrEdit extends Component {
             SelectedIngredient: "",
             isPublic: false,
             Image: null,
-          ImagePreview: null,
+            ImagePreview: null,
             ImageName: "",
             ID: "",
             OperationComplete: false
@@ -39,8 +39,6 @@ class AddOrEdit extends Component {
 
     componentDidMount() {
         bsCustomFileInput.init()
-        console.log(this.props.match.params.id)
-        console.log(this.props.location.myCustomProps)
         this.setState({ ImagePreview: '/food template.png' })
 
         try {
@@ -48,14 +46,14 @@ class AddOrEdit extends Component {
                 this.setState({ Edit: true })
 
                 //Jezeli edytujemy, wez dane z prospow
-                this.setState({ RecipeName: this.props.location.myCustomProps.Name })
-                this.setState({ Instructions: this.props.location.myCustomProps.Instructions })
-                this.setState({ Ingredients: this.props.location.myCustomProps.Ingredients })
-                this.setState({ Image: this.props.location.myCustomProps.Image })
-                this.setState({ ImagePreview: this.props.location.myCustomProps.Image })
-                this.setState({ ImageName: this.props.location.myCustomProps.nameOfImage })
-                this.setState({ ID: this.props.location.myCustomProps.ID })
-                this.setState({ isPublic: this.props.location.myCustomProps.isPublic })
+                this.setState({ RecipeName: this.props.location.recipeProps.Name })
+                this.setState({ Instructions: this.props.location.recipeProps.Instructions })
+                this.setState({ Ingredients: this.props.location.recipeProps.Ingredients })
+                this.setState({ Image: this.props.location.recipeProps.Image })
+                this.setState({ ImagePreview: this.props.location.recipeProps.Image })
+                this.setState({ ImageName: this.props.location.recipeProps.nameOfImage })
+                this.setState({ ID: this.props.location.recipeProps.ID })
+                this.setState({ isPublic: this.props.location.recipeProps.isPublic })
             }
 
             //Jak nie da rady pobierz z API
@@ -64,8 +62,7 @@ class AddOrEdit extends Component {
 
             let result = RecipesEndPointAPI.GetRecipeByID(this.props.match.params.id)
             result.then(data => {
-                console.log("Pobrano przepis ")
-                console.log(data)
+                console.log("Pobrano przepis")
                 this.setState({ RecipeName: data.name })
                 this.setState({ Instructions: data.instruction })
                 this.setState({ Ingredients: data.ingredients })
@@ -114,11 +111,9 @@ class AddOrEdit extends Component {
             let result = RecipesEndPointAPI.DownloadImage(this.state.ImageName)
             result.then(data => {
                 console.log("Pobrano obrazek")
-                console.log(data)
                 outside = URL.createObjectURL(data)
                 this.setState({ Image: outside })
                 this.setState({ ImagePreview: outside })
-                console.log(outside)
                 this.setState({ DuringOperation: false })
             })
                 .catch(error => {
@@ -163,9 +158,6 @@ class AddOrEdit extends Component {
 
     handleRecipeClick(e) {
         this.setState({ SelectedIngredient: e.target.innerHTML })
-
-
-        console.log(e.target.innerHTML)
     }
 
     handleIngredientRemove(e) {
@@ -302,7 +294,7 @@ class AddOrEdit extends Component {
     render() {
 
         if (this.state.OperationComplete === true) {
-            return <Redirect to='/Recipes' />
+            return <Redirect to='/UserRecipes' />
         }
 
         const ingredients = this.state.Ingredients.map(item =>

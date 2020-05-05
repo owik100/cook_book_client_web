@@ -14,7 +14,7 @@ export const RecipesEndPointAPI = {
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-function GetRecipeByID(Id) {
+async function GetRecipeByID(Id) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -25,7 +25,7 @@ function GetRecipeByID(Id) {
         },
     };
 
-    return fetch(API_URL + `/api/Recipes/${Id}`, requestOptions)
+    return await fetch(API_URL + `/api/Recipes/${Id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -41,7 +41,7 @@ function GetRecipeByID(Id) {
 }
 
 
-function GetAllRecipesLoggedUser(PageSize, PageNumber) {
+async function GetAllRecipesLoggedUser(PageSize, PageNumber) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -52,7 +52,7 @@ function GetAllRecipesLoggedUser(PageSize, PageNumber) {
         },
     };
 
-    return fetch(API_URL + `/api/Recipes/CurrentUserRecipes/${PageSize}/${PageNumber}`, requestOptions)
+    return await  fetch(API_URL + `/api/Recipes/CurrentUserRecipes/${PageSize}/${PageNumber}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -68,7 +68,7 @@ function GetAllRecipesLoggedUser(PageSize, PageNumber) {
 }
 
 
-function GetPublicRecipes(PageSize, PageNumber) {
+async function GetPublicRecipes(PageSize, PageNumber) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -79,7 +79,7 @@ function GetPublicRecipes(PageSize, PageNumber) {
         },
     };
 
-    return fetch(API_URL + `/api/Recipes/GetPublicRecipes/${PageSize}/${PageNumber}`, requestOptions)
+    return await  fetch(API_URL + `/api/Recipes/GetPublicRecipes/${PageSize}/${PageNumber}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -94,7 +94,7 @@ function GetPublicRecipes(PageSize, PageNumber) {
         })
 }
 
-function GetFavouritesRecipes(PageSize, PageNumber) {
+async function GetFavouritesRecipes(PageSize, PageNumber) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -105,7 +105,7 @@ function GetFavouritesRecipes(PageSize, PageNumber) {
         },
     };
 
-    return fetch(API_URL + `/api/Recipes/GetFavouritesRecipes/${PageSize}/${PageNumber}`, requestOptions)
+    return await  fetch(API_URL + `/api/Recipes/GetFavouritesRecipes/${PageSize}/${PageNumber}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -121,7 +121,7 @@ function GetFavouritesRecipes(PageSize, PageNumber) {
 }
 
 
-function DownloadImage(id) {
+async function DownloadImage(id) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -132,7 +132,7 @@ function DownloadImage(id) {
         },
     };
 
-    return fetch(API_URL + `/api/Recipes/GetPhoto/${id}`, requestOptions)
+    return await  fetch(API_URL + `/api/Recipes/GetPhoto/${id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -148,7 +148,7 @@ function DownloadImage(id) {
 }
 
 
-function DeleteRecipes(id) {
+async function DeleteRecipes(id) {
     let Authorization = AuthHeaders.GetBearer()
 
     const requestOptions = {
@@ -159,7 +159,7 @@ function DeleteRecipes(id) {
         },
     };
 
-    return fetch(API_URL + `/api/Recipes/${id}`, requestOptions)
+    return await  fetch(API_URL + `/api/Recipes/${id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -175,7 +175,7 @@ function DeleteRecipes(id) {
 }
 
 
-function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image, isPublic) {
+async function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image, isPublic) {
     let Authorization = AuthHeaders.GetBearer()
 
     let Ingredients = IngredientsArr.join(";");
@@ -195,7 +195,7 @@ function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image, isPublic)
         body: formdata,
     };
 
-    return fetch(API_URL + '/api/Recipes/', requestOptions)
+    return await  fetch(API_URL + '/api/Recipes/', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -210,7 +210,7 @@ function InsertRecipe(RecipeName, Instructions, IngredientsArr, Image, isPublic)
         })
 }
 
-function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image, NameOfImage, isPublic) {
+async function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Image, NameOfImage, isPublic) {
     let Authorization = AuthHeaders.GetBearer()
 
     let Ingredients = IngredientsArr.join(";");
@@ -232,7 +232,7 @@ function PutRecipes(id, RecipeId, RecipeName, Instructions, IngredientsArr, Imag
         body: formdata,
     };
 
-    return fetch(API_URL + `/api/Recipes/${id}`, requestOptions)
+    return await fetch(API_URL + `/api/Recipes/${id}`, requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {

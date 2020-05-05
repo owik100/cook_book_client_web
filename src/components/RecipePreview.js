@@ -28,11 +28,11 @@ class RecipePreview extends Component {
             PageBack: "1",
             IsFavourite: false,
         }
+
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleModalShow = this.handleModalShow.bind(this);
         this.handleRecipeDelete = this.handleRecipeDelete.bind(this);
         this.handleFavouriteCLick = this.handleFavouriteCLick.bind(this);
-
     }
 
     componentDidMount() {
@@ -40,47 +40,41 @@ class RecipePreview extends Component {
         //Pobierz przepis z przeslanych propsow. Gdy strona odswiezana/ nie ma propsow, pobierz z API
         console.log(this.props.match.params.id)
         try {
-            this.setState({ Name: this.props.location.myCustomProps.item.name })
-            this.setState({ Instructions: this.props.location.myCustomProps.item.instruction })
-            this.setState({ Ingredients: this.props.location.myCustomProps.item.ingredients })
-            this.setState({ Image: this.props.location.myCustomProps.item.image })
-            this.setState({ ID: this.props.location.myCustomProps.item.recipeId })
-            this.setState({ nameOfImage: this.props.location.myCustomProps.item.nameOfImage })
-            this.setState({ isPublic: this.props.location.myCustomProps.item.isPublic })
-            this.setState({ userName: this.props.location.myCustomProps.item.userName })
+            this.setState({ Name: this.props.location.recipeProps.item.name })
+            this.setState({ Instructions: this.props.location.recipeProps.item.instruction })
+            this.setState({ Ingredients: this.props.location.recipeProps.item.ingredients })
+            this.setState({ Image: this.props.location.recipeProps.item.image })
+            this.setState({ ID: this.props.location.recipeProps.item.recipeId })
+            this.setState({ nameOfImage: this.props.location.recipeProps.item.nameOfImage })
+            this.setState({ isPublic: this.props.location.recipeProps.item.isPublic })
+            this.setState({ userName: this.props.location.recipeProps.item.userName })
             this.setState({ PageBackUser: (this.props.location.pageBackUser)})
             this.setState({ PageBackPublic: (this.props.location.pageBackPublic)})
             this.setState({ PageBackFavourites: (this.props.location.pageBackFavourites)})
 
             let favourites = Authentication.LoadUserFavouritesRecipes()
 
-            if(favourites.includes(this.props.location.myCustomProps.item.recipeId )){
+            if(favourites.includes(this.props.location.recipeProps.item.recipeId )){
                 this.setState({ IsFavourite: (true)})
             }
 
-if(this.props.location.myCustomProps2 === "User")
+if(this.props.location.UserOrPublicOrFavouritesProps === "User")
 {
     this.setState({ LastVisit: "/UserRecipes"})
 }
-else if (this.props.location.myCustomProps2 === "Public")
+else if (this.props.location.UserOrPublicOrFavouritesProps === "Public")
 {
     this.setState({ LastVisit: "/PublicRecipes"})
 }
 else{
     this.setState({ LastVisit: "/FavouritesRecipes"})
-}
-
-
-            
-
-
+}       
         } catch (error) {
             this.setState({ DuringOperation: true })
 
             let result = RecipesEndPointAPI.GetRecipeByID(this.props.match.params.id)
             result.then(data => {
                 console.log("Pobrano przepis ")
-                console.log(data)
                 this.setState({ Name: data.name })
                 this.setState({ Instructions: data.instruction })
                 this.setState({ Ingredients: data.ingredients })
@@ -96,7 +90,6 @@ else{
                 if(favourites.includes(data.recipeId )){
                     this.setState({ IsFavourite: (true)})
                 }
-
 
                 this.setState({ DuringOperation: false })
                 this.DonwloadRecipeImage();
@@ -138,10 +131,8 @@ else{
             let result = RecipesEndPointAPI.DownloadImage(this.state.nameOfImage)
             result.then(data => {
                 console.log("Pobrano obrazek")
-                console.log(data)
                 outside = URL.createObjectURL(data)
                 this.setState({ Image: outside })
-                console.log(outside)
                 this.setState({ DuringOperation: false })
             })
                 .catch(error => {
@@ -301,7 +292,7 @@ else{
         {      editButton =  <Button size="lg" variant="outline-dark" className="mr-3 mt-3 mb-3 mx-auto d-block" as={Link} to={
             {
                 pathname: `/Edit/${this.state.ID}`,
-                myCustomProps: this.state
+                recipeProps: this.state
             }}  >Edytuj</Button> 
         
             deleteButton =  <Button onClick={this.handleModalShow} size="lg" variant="outline-danger" className="mt-3 mb-3  mx-auto d-block">Usuń</Button>

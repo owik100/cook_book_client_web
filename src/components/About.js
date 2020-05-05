@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 function About()
 {
-    const [appVersion, setAppVersion] = useState("1.0.0");
+    const [appVersion, setAppVersion] = useState();
 
     const ReactAppVersion = process.env.REACT_APP_VERSION;
 

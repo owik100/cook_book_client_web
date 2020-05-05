@@ -78,7 +78,6 @@ class LoginForm extends Component {
 
         result.then(data => {
             console.log("Pobrano dane użytkownika")
-            console.log(data)
             Authentication.SaveUserData(data);
             this.setState({ isLogged: true })
         })

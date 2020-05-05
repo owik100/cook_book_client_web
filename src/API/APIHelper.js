@@ -11,7 +11,7 @@ export const APIHelper = {
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-function Register(Email, UserName, Password, ConfirmPassword) {
+async function Register(Email, UserName, Password, ConfirmPassword) {
 
     const requestOptions = {
         method: 'POST',
@@ -19,7 +19,7 @@ function Register(Email, UserName, Password, ConfirmPassword) {
         body: JSON.stringify({ Email, UserName, Password, ConfirmPassword })
     };
 
-    return fetch(API_URL + '/api/Account/register', requestOptions)
+    return await fetch(API_URL + '/api/Account/register', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -35,7 +35,7 @@ function Register(Email, UserName, Password, ConfirmPassword) {
 };
 
 
-function LogIn(username, password) {
+async function LogIn(username, password) {
 
     let body = new URLSearchParams();
     body.append("grant_type", "password");
@@ -48,7 +48,7 @@ function LogIn(username, password) {
         body: body
     };
 
-    return fetch(API_URL + '/token', requestOptions)
+    return await fetch(API_URL + '/token', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -64,7 +64,7 @@ function LogIn(username, password) {
 };
 
 
-function GetUserData() {
+async function GetUserData() {
 
     let Authorization = AuthHeaders.GetBearer()
 
@@ -76,7 +76,7 @@ function GetUserData() {
         },
     };
 
-    return fetch(API_URL + '/api/User', requestOptions)
+    return await fetch(API_URL + '/api/User', requestOptions)
         .then(response => {
             // reject not ok response
             if (!response.ok) {
@@ -92,7 +92,7 @@ function GetUserData() {
 }
 
 
-function EditUser(FavouriteRecipes) {
+async function EditUser(FavouriteRecipes) {
 
     let Authorization = AuthHeaders.GetBearer()
 
@@ -114,7 +114,7 @@ function EditUser(FavouriteRecipes) {
         body: formdata,
     };
 
-    return fetch(API_URL + `/api/User/${Id}`, requestOptions)
+    return await fetch(API_URL + `/api/User/${Id}`, requestOptions)
     .then(response => {
         // reject not ok response
         if (!response.ok) {
