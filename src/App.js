@@ -14,7 +14,7 @@ import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
   Link,
@@ -29,7 +29,7 @@ import AddOrEdit from './components/AddOrEdit';
 function App() {
   return (
     <div>
-      <Router basename={process.env.REACT_APP_PUBLIC_URL}>
+      <Router>
         <Header />
         <Switch>
 
