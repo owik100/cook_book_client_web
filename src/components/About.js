@@ -11,6 +11,7 @@ function About()
     return(
         <div className="App">
         <header className="App-header">
+          <img src='/blankicon256.png'/>
           <p>
            CookBook {appVersion}
           </p>

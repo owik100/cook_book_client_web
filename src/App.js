@@ -29,7 +29,7 @@ import AddOrEdit from './components/AddOrEdit';
 function App() {
   return (
     <div>
-      <Router>
+      <Router basename={process.env.REACT_APP_PUBLIC_URL}>
         <Header />
         <Switch>
 
