@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/cook_book_client_web/static/css/main.a0dd9446.chunk.css",
-    "main.js": "/cook_book_client_web/static/js/main.d0f3211c.chunk.js",
-    "main.js.map": "/cook_book_client_web/static/js/main.d0f3211c.chunk.js.map",
+    "main.js": "/cook_book_client_web/static/js/main.c28e8ec9.chunk.js",
+    "main.js.map": "/cook_book_client_web/static/js/main.c28e8ec9.chunk.js.map",
     "runtime-main.js": "/cook_book_client_web/static/js/runtime-main.bff442ee.js",
     "runtime-main.js.map": "/cook_book_client_web/static/js/runtime-main.bff442ee.js.map",
     "static/css/2.de424728.chunk.css": "/cook_book_client_web/static/css/2.de424728.chunk.css",
     "static/js/2.246ae21f.chunk.js": "/cook_book_client_web/static/js/2.246ae21f.chunk.js",
     "static/js/2.246ae21f.chunk.js.map": "/cook_book_client_web/static/js/2.246ae21f.chunk.js.map",
     "index.html": "/cook_book_client_web/index.html",
-    "precache-manifest.29e2efc360ffc70ae807aecfc1f2eea1.js": "/cook_book_client_web/precache-manifest.29e2efc360ffc70ae807aecfc1f2eea1.js",
+    "precache-manifest.dcaf63d92a283ee5d37b5189a3d16cb6.js": "/cook_book_client_web/precache-manifest.dcaf63d92a283ee5d37b5189a3d16cb6.js",
     "service-worker.js": "/cook_book_client_web/service-worker.js",
     "static/css/2.de424728.chunk.css.map": "/cook_book_client_web/static/css/2.de424728.chunk.css.map",
     "static/css/main.a0dd9446.chunk.css.map": "/cook_book_client_web/static/css/main.a0dd9446.chunk.css.map",
@@ -21,6 +21,6 @@
     "static/css/2.de424728.chunk.css",
     "static/js/2.246ae21f.chunk.js",
     "static/css/main.a0dd9446.chunk.css",
-    "static/js/main.d0f3211c.chunk.js"
+    "static/js/main.c28e8ec9.chunk.js"
   ]
 }
