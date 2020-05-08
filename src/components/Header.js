@@ -58,7 +58,13 @@ function Header() {
     return (
         <header>
             <Navbar variant="dark" bg="primary" sticky="top" expand="lg">
-                <Navbar.Brand as={Link} to="/UserRecipes">Cook Book</Navbar.Brand>
+                <Navbar.Brand  as={Link} to="/UserRecipes">  <img
+        alt=""
+        src= {process.env.REACT_APP_PUBLIC_URL +  '/blankicon256.png'}
+        width="30"
+        height="30"
+        className="d-inline-block align-top"
+      />{' '} Cook Book</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     {NavIfLogged()}
