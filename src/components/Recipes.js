@@ -307,7 +307,7 @@ class Recipes extends Component {
         this.state.Recipes.forEach(function (item, key) {
 
             if (item.nameOfImage === null) {
-                item.image = '/food template.png'
+                item.image =  process.env.REACT_APP_PUBLIC_URL +'/food template.png'
                 that.setState({
                     Recipes: that.state.Recipes.map(el => (el.recipeId === item.recipeId ? { ...el, item } : el))
                 });
