@@ -40,11 +40,11 @@ class Recipes extends Component {
 
     AddDisplayAsPublicProperty(data)
     {
-        let pathName = window.location.pathname;
+        let pathName = window.location.hash;
 
         data.forEach(function (element) {
             element.DisplayAsPublic = false;
-            if(element.isPublic && element.userName === Authentication.LoadUserName() && (pathName === "/PublicRecipes" || pathName === "/UserRecipes" || pathName === "/"))
+            if(element.isPublic && element.userName === Authentication.LoadUserName() && (pathName === "#/PublicRecipes" || pathName === "#/UserRecipes"|| pathName === "#/" || pathName === "/"))
             {
                 element.DisplayAsPublic = true;
             }
@@ -56,12 +56,12 @@ class Recipes extends Component {
 
     AddDisplayAsFavouritesProperty(data)
     {
-        let pathName = window.location.pathname;
+        let pathName = window.location.hash;
         let favourites = Authentication.LoadUserFavouritesRecipes()
 
         data.forEach(function (element) {
             element.DisplayAsFavourite = false;
-            if(pathName === "/PublicRecipes" && favourites.includes(element.recipeId))
+            if(pathName === "#/PublicRecipes" && favourites.includes(element.recipeId))
             {
                 element.DisplayAsFavourite = true;
             }
@@ -74,7 +74,7 @@ class Recipes extends Component {
     CheckPath()
     {
         try {
-            let pathName = window.location.pathname;
+            let pathName = window.location.hash;
 
         let pageNumberUser = this.props.location.pageBackUser
         let pageNumberPublic = this.props.location.pageBackPublic
@@ -89,7 +89,7 @@ class Recipes extends Component {
         if(pageNumberFavourites != undefined)
         this.setState({ PageNumberFavouritesRecipes: pageNumberFavourites})
 
-             if (pathName === "/PublicRecipes") {
+             if (pathName === "#/PublicRecipes") {
                 let pageNumber = this.props.location.pageBackPublic
                 if(pageNumber === undefined)
                 pageNumber = this.state.PageNumberPublicRecipes
@@ -98,7 +98,7 @@ class Recipes extends Component {
                  this.setState({ UserOrPublicOrFavourites: "Public" })
                  this.LoadPublicRecipes(this.state.PageSize, pageNumber)
              }
-             else if(pathName === "/UserRecipes") {
+             else if(pathName === "#/UserRecipes") {
                 let pageNumber = this.props.location.pageBackUser
                 if(pageNumber === undefined)
                 pageNumber = this.state.PageNumberUserRecipes
@@ -107,7 +107,7 @@ class Recipes extends Component {
                  this.setState({ UserOrPublicOrFavourites: "User" })
                  this.LoadUserRecipes(this.state.PageSize, pageNumber)
              }
-             else if(pathName === "/FavouritesRecipes") {
+             else if(pathName === "#/FavouritesRecipes") {
                 let pageNumber = this.props.location.pageBackFavourites
                 if(pageNumber === undefined)
                 pageNumber = this.state.PageNumberFavouritesRecipes
@@ -307,7 +307,7 @@ class Recipes extends Component {
         this.state.Recipes.forEach(function (item, key) {
 
             if (item.nameOfImage === null) {
-                item.image = '/food template.png'
+                item.image =  process.env.REACT_APP_PUBLIC_URL +'/food template.png'
                 that.setState({
                     Recipes: that.state.Recipes.map(el => (el.recipeId === item.recipeId ? { ...el, item } : el))
                 });

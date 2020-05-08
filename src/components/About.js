@@ -11,13 +11,13 @@ function About()
     return(
         <div className="App">
         <header className="App-header">
-          <img src='/blankicon256.png'/>
+          <img src = {process.env.REACT_APP_PUBLIC_URL + '/blankicon256.png'}/>
           <p>
            CookBook {appVersion}
           </p>
           <a
             className="App-link"
-            href="https://github.com/owik100/Cook-Book"
+            href="https://github.com/owik100/cook_book_client_web"
             target="_blank"
             rel="noopener noreferrer"
           >

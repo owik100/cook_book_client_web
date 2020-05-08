@@ -39,7 +39,7 @@ class AddOrEdit extends Component {
 
     componentDidMount() {
         bsCustomFileInput.init()
-        this.setState({ ImagePreview: '/food template.png' })
+        this.setState({ ImagePreview: process.env.REACT_APP_PUBLIC_URL +'/food template.png' })
 
         try {
             if (this.props.match.params.id != 0) {
@@ -103,7 +103,7 @@ class AddOrEdit extends Component {
         let outside
 
         if (this.state.ImageName === null) {
-            this.setState({ ImagePreview: '/food template.png' })
+            this.setState({ ImagePreview: process.env.REACT_APP_PUBLIC_URL + '/food template.png' })
         }
         else {
 
@@ -260,7 +260,7 @@ class AddOrEdit extends Component {
     DeleteImage() {
         this.setState({ ImageName: "" })
         this.setState({ Image: null })
-        this.setState({ ImagePreview: '/food template.png' })
+        this.setState({ ImagePreview: process.env.REACT_APP_PUBLIC_URL + '/food template.png' })
 
     }
 
