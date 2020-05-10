@@ -21,6 +21,8 @@ class Recipes extends Component {
             PageNumberUserRecipes : 1,
             PageNumberPublicRecipes : 1,
             PageNumberFavouritesRecipes : 1,
+            NoUserRecipesInfo : false,
+            NoFafouritesRecipesInfo : false,
         }
 
         this.PreviousPage = this.PreviousPage.bind(this);
@@ -142,9 +144,15 @@ class Recipes extends Component {
             if(data.length > 0)
             {
                 this.setState({TotalPages : data[0].totalPages})
+
+                this.setState({NoUserRecipesInfo : false})
+                this.setState({NoFafouritesRecipesInfo : false})
             }
             else{
-                this.setState({TotalPages : 1})
+                this.setState({TotalPages : 1})     
+
+                this.setState({NoUserRecipesInfo : true})
+                this.setState({NoFafouritesRecipesInfo : false})
             }
 
             this.NavigationButtonsActiveDeactive(PageNumber)
@@ -191,9 +199,15 @@ class Recipes extends Component {
             if(data.length > 0)
             {
                 this.setState({TotalPages : data[0].totalPages})
+
+                this.setState({NoUserRecipesInfo : false})
+                this.setState({NoFafouritesRecipesInfo : false})
             }
             else{
                 this.setState({TotalPages : 1})
+
+                this.setState({NoUserRecipesInfo : false})
+                this.setState({NoFafouritesRecipesInfo : false})
             }
 
             this.NavigationButtonsActiveDeactive(PageNumber)
@@ -236,9 +250,15 @@ class Recipes extends Component {
             if(data.length > 0)
             {
                 this.setState({TotalPages : data[0].totalPages})
+
+                this.setState({NoUserRecipesInfo : false})
+                this.setState({NoFafouritesRecipesInfo : false})
             }
             else{
                 this.setState({TotalPages : 1})
+
+                this.setState({NoUserRecipesInfo : false})
+                this.setState({NoFafouritesRecipesInfo : true})
             }
             
             this.NavigationButtonsActiveDeactive(PageNumber)
@@ -483,7 +503,9 @@ class Recipes extends Component {
                        
                         </Col>
 
-                
+                    <div className="mt-3"><p>{this.state.NoUserRecipesInfo ? "Nie masz żadnych przepisów. Dodaj kilka!" : null}</p></div>
+                    <div className="mt-3"><p>{this.state.NoFafouritesRecipesInfo ? "Nie masz żadnych ulubionych przepisów. Dodaj jakieś naciskając gwiazdkę!" : null }</p></div>
+
                     </Row>
                 </Container>
 
