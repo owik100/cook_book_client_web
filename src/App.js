@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react'
 
 import Header from '../src/components/Header';
 import LoginForm from '../src/components/LoginForm';
@@ -20,8 +20,10 @@ import {
   Link,
   Redirect,
   useHistory,
-  useLocation
+  useLocation,
 } from "react-router-dom";
+
+import ScrollToTop from '../src/helpers/ScrollToTop'
 
 import RegisterForm from './components/RegisterForm';
 import AddOrEdit from './components/AddOrEdit';
@@ -30,6 +32,8 @@ function App() {
   return (
     <div>
       <Router>
+      <Fragment>
+      <ScrollToTop />
         <Header />
         <Switch>
 
@@ -53,6 +57,7 @@ function App() {
           <PrivateRoute path="/" component={Recipes} />
 
         </Switch>
+        </Fragment>
       </Router>
     </div>
   );
