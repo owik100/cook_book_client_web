@@ -11,7 +11,7 @@ function About()
     return(
         <div className="App">
         <header className="App-header">
-          <img src = {process.env.REACT_APP_PUBLIC_URL + '/blankicon256.png'}/>
+          <img src = {process.env.REACT_APP_PUBLIC_URL + '/blankicon256.png'} alt="logo"/>
           <p>
            CookBook {appVersion}
           </p>

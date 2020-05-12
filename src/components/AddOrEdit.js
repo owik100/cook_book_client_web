@@ -385,7 +385,7 @@ class AddOrEdit extends Component {
                             </Col>
 
                             <Col md={4}>
-                                <img className="smallImg mx-auto d-block mb-3" src={this.state.ImagePreview} />
+                                <img className="smallImg mx-auto d-block mb-3" src={this.state.ImagePreview} alt="recipe image"/>
                             </Col>
                             <Col md={12}>
                                 <div class="d-flex justify-content-center">

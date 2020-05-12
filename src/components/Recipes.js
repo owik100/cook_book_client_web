@@ -471,7 +471,7 @@ class Recipes extends Component {
     
                         <div className="mt-3 singleRecipe" >
                             <div class="d-flex justify-content-center">
-                                <img src={item.image} />
+                                <img src={item.image} alt="recipe image"  />
                             </div>
                             <p className="text-center"> {item.name}</p>
                         </div>

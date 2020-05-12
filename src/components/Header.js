@@ -59,7 +59,7 @@ function Header() {
         <header>
             <Navbar variant="dark" bg="primary" sticky="top" expand="lg">
                 <Navbar.Brand  as={Link} to="/UserRecipes">  <img
-        alt=""
+        alt="logo"
         src= {process.env.REACT_APP_PUBLIC_URL +  '/blankicon256.png'}
         width="30"
         height="30"

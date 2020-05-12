@@ -308,7 +308,7 @@ else{
         authorInfo = <p  className="text-center">Autor przepisu: {this.state.userName}</p>
 
         favouriteButton =  <Button onClick={this.handleFavouriteCLick} size="lg" variant="outline-warning" className="mt-3 mb-3  mx-auto d-block"> <img className="img-fluid imgStar" 
-         src= {this.state.IsFavourite ? process.env.REACT_APP_PUBLIC_URL +'/starFull.png' : process.env.REACT_APP_PUBLIC_URL + '/starEmpty.png'} /> </Button>
+         src= {this.state.IsFavourite ? process.env.REACT_APP_PUBLIC_URL +'/starFull.png' : process.env.REACT_APP_PUBLIC_URL + '/starEmpty.png'} alt="star image" /> </Button>
 
          }
 
@@ -355,7 +355,7 @@ else{
                             </Col>
 
                             <Col md={8}>
-                                <img className="img-fluid mx-auto d-block" src={this.state.Image}></img>
+                                <img className="img-fluid mx-auto d-block" src={this.state.Image} alt="recipe image" ></img>
                             </Col>
 
                             <Col  >
