@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Navbar, Nav } from 'react-bootstrap';
 import { Link, useHistory, } from "react-router-dom";
 import { Authentication } from '../helpers/Authentication'
-
 
 
 function AuthButton() {
@@ -37,11 +36,11 @@ function GetName() {
     }
 }
 
-function NavIfLogged() {
-
+function NavIfLogged({ onClick }) {
+  
     if (Authentication.LoadUserName() != null && Authentication.isAuthenticated()) {
         return (
-            <Nav className="mr-auto">
+            <Nav className="mr-auto" onClick={onClick} >
                 <Nav.Link as={Link} to="/Edit/0" >Dodaj przepis</Nav.Link>
                 <Nav.Link as={Link} to="/UserRecipes" >Moje przepisy</Nav.Link>
                 <Nav.Link as={Link} to="/PublicRecipes" >Odkrywaj przepisy</Nav.Link>
@@ -55,9 +54,16 @@ function NavIfLogged() {
 }
 
 function Header() {
+
+
+    const [expanded, setExpanded] = useState(false);
+
+    const Close = () => {
+        setExpanded(false)}
+
     return (
         <header>
-            <Navbar variant="dark" bg="primary" sticky="top" expand="lg">
+            <Navbar expanded={expanded} variant="dark" bg="primary" sticky="top" expand="lg">
                 <Navbar.Brand  as={Link} to="/UserRecipes">  <img
         alt="logo"
         src= {process.env.REACT_APP_PUBLIC_URL +  '/blankicon256.png'}
@@ -65,10 +71,10 @@ function Header() {
         height="30"
         className="d-inline-block align-top"
       />{' '} Cook Book</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setExpanded(expanded ? false : "expanded")} />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    {NavIfLogged()}
-                    <Nav className="justify-content-end">
+                    <NavIfLogged onClick={Close}/>
+                    <Nav className="justify-content-end" onClick={() => setExpanded(false)}>
                     <Nav.Link className="mr-3" as={Link} to="/About" >O aplikacji</Nav.Link>
                         {GetName()}
                         {AuthButton()}

@@ -486,7 +486,7 @@ class Recipes extends Component {
 
                         <Col md={12}>
                         <div className="d-flex justify-content-center mt-3">
-                        <Button className="mr-3" variant="primary" size="lg" disabled={!this.state.CanPrevious} onClick={this.PreviousPage}> &lt;= </Button>
+                        <Button className="mr-3 mb-3" variant="primary" size="lg" disabled={!this.state.CanPrevious} onClick={this.PreviousPage}> &lt;= </Button>
                         <p className="mr-3 ">
                         {(() => {
                             switch (this.state.UserOrPublicOrFavourites) {
@@ -497,7 +497,7 @@ class Recipes extends Component {
                             }
                         })()}
                         </p>
-            <Button variant="primary" size="lg" disabled={!this.state.CanNext} onClick={this.NextPage}> =&gt; </Button>
+                         <Button className="mb-3" variant="primary" size="lg" disabled={!this.state.CanNext} onClick={this.NextPage}> =&gt; </Button>
 
                         </div>
                        
