@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Form, Button, Spinner, Alert, Row, Col, Toast } from 'react-bootstrap';
 import { Link, Redirect } from "react-router-dom";
 import { Authentication } from "../helpers/Authentication"
 import { APIHelper } from '../API/APIHelper';
 
 class LoginForm extends Component {
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             Login: "",
             Password: "",
@@ -15,6 +15,7 @@ class LoginForm extends Component {
             InfoMessage: "",
             DuringOperation: false,
             isLogged: false,
+            LogInfoMessage : "Rejestracja pomyślna. Możesz się teraz zalogować!",
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -54,6 +55,7 @@ class LoginForm extends Component {
                 if (error == "TypeError: response.text is not a function") {
                     console.log('Problem z połączeniem')
                     this.setState({ InfoMessage: 'Problem z połączeniem' })
+                    this.setState({ ShowLogInfo: false })
                     this.setState({ DuringOperation: false })
                 }
                 else {
@@ -61,6 +63,7 @@ class LoginForm extends Component {
                         var obj = JSON.parse(error)
                         console.log(obj.message)
                         this.setState({ InfoMessage: obj.message })
+                        this.setState({ ShowLogInfo: false })
                         this.setState({ DuringOperation: false })
                     }
                     //Another problem...
@@ -86,6 +89,7 @@ class LoginForm extends Component {
                 if (error == "TypeError: response.text is not a function") {
                     console.log('Problem z połączeniem')
                     this.setState({ InfoMessage: 'Problem z połączeniem' })
+                    this.setState({ ShowLogInfo: false })
                     this.setState({ DuringOperation: false })
                 }
                 else {
@@ -93,6 +97,7 @@ class LoginForm extends Component {
                         var obj = JSON.parse(error)
                         console.log(obj.message)
                         this.setState({ InfoMessage: obj.message })
+                        this.setState({ ShowLogInfo: false })
                         this.setState({ DuringOperation: false })
                     }
                     //Another problem...
@@ -127,6 +132,24 @@ class LoginForm extends Component {
         }
     }
 
+    RegisterSuccess(){
+
+        let info = this.props.location.showInfoLog
+
+        if(info === true)
+       {
+            return (
+                <Alert className="text-center mt-3" variant="success">
+                {this.state.LogInfoMessage}
+            </Alert>
+            );
+        }
+        else {
+            return null
+            }
+        }
+    
+
     render() {
         if (this.state.isLogged === true) {
             return <Redirect to='/UserRecipes' />
@@ -140,6 +163,7 @@ class LoginForm extends Component {
                             <h1 className="display-3 text-center mt-5">Logowanie</h1>
 
                             {this.LoginMessage()}
+                            {this.RegisterSuccess()}
 
                             <Form.Group controlId="formLogin">
                                 <Form.Label>Login</Form.Label>
@@ -169,7 +193,14 @@ class LoginForm extends Component {
                         Zarejestruj
             </Button>
                 </div>
+                <Row>
+
+ 
+    </Row>
+
             </div>
+
+
         )
     }
 }

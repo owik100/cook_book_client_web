@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Button, Spinner, Alert } from 'react-bootstrap';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { APIHelper } from '../API/APIHelper';
 
 class RegisterForm extends Component {
@@ -14,7 +14,8 @@ class RegisterForm extends Component {
             ConfirmPassword: "",
             InfoMessage: "",
             InfoMessageIsError: false,
-            DuringOperation: false
+            DuringOperation: false,
+            OperationSuccess: false,
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -37,6 +38,7 @@ class RegisterForm extends Component {
                 this.setState({ InfoMessage: "Rejestracja pomyślna! Możesz teraz się zalogować." })
                 this.setState({ InfoMessageIsError: false })
                 this.setState({ DuringOperation: false })
+                this.setState({ OperationSuccess: true })
                 this.ClearForm();
             })
                 .catch(error => {
@@ -123,6 +125,14 @@ class RegisterForm extends Component {
     }
 
     render() {
+        if (this.state.OperationSuccess === true) {
+            return <Redirect to='/Login' as ={Link} to={
+                {
+                    pathname: '/Login',
+                    showInfoLog: true,
+                }} />
+        }
+
         return (
             <div class="container">
                 <div class="row">
